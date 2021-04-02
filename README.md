@@ -1,9 +1,9 @@
 # Intan-RHX
 Intan RHX is free, powerful data acquisition software that displays and records electrophysiological signals from any Intan RHD or RHS system using an RHD USB interface board, RHD recording controller, or RHS stim/recording controller.
 
-The most recent binaries are available under Releases:
+The most recent binaries are available from the Intan website: https://intantech.com or here on GitHub under Releases:
 
-IntanRHXInstaller.exe -> Windows 64-bit installer
+IntanRHXInstaller.exe -> Windows 64-bit installer (Wix Burn bootstrapper application that guides the user through installation)
 
 IntanRHX.dmg -> MacOS 64-bit disk image
 
