@@ -1,0 +1,45 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+
+  validate-data:
+    name: Validate Metadata
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create Build Environment
+      run: cd .github/workflows/ && podman build -t intanrhx_validate -f ./Dockerfile-debian-testing .
+
+    - name: Validate
+      run: podman run -t -v `pwd`:/build intanrhx_validate
+           appstreamcli validate contrib/com.intantech.intan_rhx.metainfo.xml
+
+
+  build-debian:
+    name: Debian
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install Prerequisites
+      run: sudo apt-get -yq install debspawn
+
+    - name: Create Build Environment
+      run: debspawn create bullseye
+
+    - name: Build
+      run: ./contrib/ci/auto-build-deb.sh bullseye
+
+    - name: Upload Debian package artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Debian Package
+        path: |
+          result/*.deb
+          result/*.buildinfo
