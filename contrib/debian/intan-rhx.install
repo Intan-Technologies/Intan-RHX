@@ -1,4 +1,4 @@
-FPGA${Space}bit${Space}files/*.bit usr/lib/intan-rhx/
+FPGA-bitfiles/*.bit usr/lib/intan-rhx/
 IntanRHX usr/lib/intan-rhx/
 contrib/com.intantech.intan_rhx.desktop usr/share/applications/
 contrib/com.intantech.intan_rhx.metainfo.xml usr/share/metainfo
