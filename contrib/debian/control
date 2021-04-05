@@ -1,0 +1,21 @@
+Source: intan-rhx
+Section: non-free/science
+Priority: optional
+Maintainer: Intan Technologies <info@intantech.com>
+Build-Depends: debhelper-compat (= 13),
+               libqt5xmlpatterns5-dev,
+               ocl-icd-opencl-dev,
+               qt5-qmake,
+               qtbase5-dev,
+               qtmultimedia5-dev
+Standards-Version: 4.5.0
+
+Package: intan-rhx
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Powerful data acquisition software for electrophysiological data
+ Intan RHX is a free, powerful data acquisition software that displays and
+ records electrophysiological signals from any Intan RHD or RHS system using
+ an RHD USB interface board, RHD recording controller, or RHS
+ stim/recording controller.
