@@ -1,0 +1,8 @@
+FPGA${Space}bit${Space}files/*.bit usr/lib/intan-rhx/
+IntanRHX usr/lib/intan-rhx/
+contrib/com.intantech.intan_rhx.desktop usr/share/applications/
+contrib/com.intantech.intan_rhx.metainfo.xml usr/share/metainfo
+images/intan-rhx.svg usr/share/icons/hicolor/scalable/apps/
+kernel.cl usr/lib/intan-rhx/
+libraries/Linux/60-opalkelly.rules usr/lib/udev/rules.d/
+libraries/Linux/libokFrontPanel.so usr/lib/intan-rhx/
