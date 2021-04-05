@@ -5,12 +5,10 @@ set -e
 # This script is supposed to be run by the GitHub CI system.
 #
 
-if [ -z "$1" ]; then
-    echo "No suite set to build the package for."
+if [ -z "$CI" ]; then
+    echo "Not in a CI build environment. This script should not be run manually!"
     exit 1
 fi
-
-SUITE=$1
 
 #
 # Build Debian package
@@ -27,8 +25,9 @@ mv contrib/debian .
 dch --distribution "UNRELEASED"	--newversion="${upstream_version}" -b \
     "New automated build from: ${upstream_version} - ${git_commit}"
 
+# Actually build the package.
+# Use a helper like `debspawn` or `debuild` when building manually!
 mkdir -p result
-debspawn build \
-            --results-dir=./result \
-            $SUITE \
-            .
+dpkg-buildpackage
+mv ../*.deb ./result/
+mv ../*.build* ./result/
