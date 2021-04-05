@@ -19,9 +19,11 @@ jobs:
 
 
   build-debian:
-    name: Debian
+    name: Debian Stable
     runs-on: ubuntu-latest
 
+    env:
+      SUITE: bullseye
     steps:
     - uses: actions/checkout@v2
       with:
@@ -31,15 +33,44 @@ jobs:
       run: sudo apt-get -yq install debspawn
 
     - name: Create Build Environment
-      run: debspawn create bullseye
+      run: debspawn create ${{ env.SUITE }}
 
     - name: Build
-      run: ./contrib/ci/auto-build-deb.sh bullseye
+      run: ./contrib/ci/auto-build-deb.sh ${{ env.SUITE }}
 
     - name: Upload Debian package artifact
       uses: actions/upload-artifact@v2
       with:
         name: Debian Package
+        path: |
+          result/*.deb
+          result/*.buildinfo
+
+
+  build-ubuntu:
+    name: Ubuntu LTS
+    runs-on: ubuntu-latest
+
+    env:
+      SUITE: focal
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install Prerequisites
+      run: sudo apt-get -yq install debspawn
+
+    - name: Create Build Environment
+      run: debspawn create ${{ env.SUITE }}
+
+    - name: Build
+      run: ./contrib/ci/auto-build-deb.sh ${{ env.SUITE }}
+
+    - name: Upload Ubuntu package artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Ubuntu Package
         path: |
           result/*.deb
           result/*.buildinfo
