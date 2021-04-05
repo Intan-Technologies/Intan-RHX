@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.intantech.intan_rhx</id>
+
+  <name>Intan RHX</name>
+  <summary>A free, powerful data acquisition software for electrophysiological signals</summary>
+
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      Intan RHX is a free, powerful data acquisition software that displays and records electrophysiological
+      signals from any Intan RHD or RHS system using an RHD USB interface board, RHD recording controller,
+      or RHS stim/recording controller.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">com.intantech.intan_rhx.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://intantech.com/image-src/RHX_screenshot2_940.PNG</image>
+    </screenshot>
+  </screenshots>
+</component>

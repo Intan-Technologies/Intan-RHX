@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Intan RHX
+Comment=A free, powerful data acquisition software for electrophysiological signals
+Categories=Science;Biology;
+
+Icon=intan-rhx
+Exec=intan-rhx
+Terminal=false
