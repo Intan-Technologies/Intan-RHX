@@ -276,8 +276,8 @@ LIBS += -L$$PWD/libraries/Mac/ -lokFrontPanel # Opal Kelly Front Panel library
 
 # Linux
 unix:!macx: {
-LIBS += -L$$PWD/libraries/Linux/ -lOpenCL # OpenCL library
-LIBS += -L$$PWD/libraries/Linux/ -lokFrontPanel # Opal Kelly Front Panel library
+LIBS += -lOpenCL
+LIBS += -L"$$_PRO_FILE_PWD_/libraries/Linux/" -lokFrontPanel # Opal Kelly Front Panel library
 QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN\'' # Flag that at runtime, look for shared libraries (like
                                            # libokFrontPanel.so) at the same directory as the binary
 }
