@@ -97,29 +97,3 @@ jobs:
         path: |
           result/*.deb
           result/*.build*
-
-
-  build-ubuntu-16:
-    name: Ubuntu 16
-    runs-on: ubuntu-16.04
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    - name: Create Build Environment
-      run: cd contrib/ci/ && podman build -t intanrhx -f Dockerfile-ubuntu .
-
-    - name: Build
-      run: |
-        podman run -t -e CI=true -e DEBEMAIL=no-reply@intantech.com -v `pwd`:/build intanrhx \
-            ./contrib/ci/auto-build-deb.sh
-
-    - name: Upload Ubuntu package artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ubuntu 16 Package
-        path: |
-          result/*.deb
-          result/*.build*
