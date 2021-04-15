@@ -25,7 +25,7 @@ Various files need to be present in the same directory as the binary executable 
 
 ### Windows:
 
-Opal Kelly USB drivers should be installed so that the Intan hardware can communicate via USB. These are available at: https://intantech.com/files/Intan_controller_USB_drivers.zip and are automatically installed when running IntanRHXInstaller.exe. These also rely on the Microsoft Visual C++ Redistributables (x64) from 2010, 2013, and 2015-2019, which are available from Microsoft and should also be installed prior to running IntanRHX. Finally, okFrontPanel.dll (found in the libraries directory) should be in the same directory as the binary executable at runtime.
+The RHX software depends on Opal Kelly USB drivers and Microsoft Redistributables. When running the distributed Windows installer from the Intan website, these are automatically installed, but when building RHX from source, these should still be installed on the system. Opal Kelly USB drivers should be installed so that the Intan hardware can communicate via USB. These are available at: https://intantech.com/files/Intan_controller_USB_drivers.zip. These also rely on the Microsoft Visual C++ Redistributables (x64) from 2010, 2013, and 2015-2019, which are available from Microsoft and should also be installed prior to running IntanRHX. Finally, okFrontPanel.dll (found in the libraries directory) should be in the same directory as the binary executable at runtime.
 
 ### Mac:
 
