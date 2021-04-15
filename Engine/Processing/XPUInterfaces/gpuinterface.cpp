@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -565,13 +565,10 @@ bool GPUInterface::createKernel(int devIndex)
 
     state->writeToLog("About to call clCreateCommandQueue");
     // Create command queue.
-#ifdef __APPLE__
     commandQueue = clCreateCommandQueue(context, id, 0, &ret);
-#else
-    commandQueue = clCreateCommandQueueWithProperties(context, id, nullptr, &ret);
-#endif
     if (ret != CL_SUCCESS) {
-        gpuErrorMessage(tr("Error creating OpenCL commandqueue."));
+        state->writeToLog("Failure creating OpenCL commandqueue. Ret: " + QString::number(ret));
+        gpuErrorMessage("Error creating OpenCL commandqueue. Returned error code: " + QString::number(ret));
         return false;
     }
     state->writeToLog("Completed clCreateCommandQueue");

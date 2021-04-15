@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -831,8 +831,10 @@ QStringList SignalSources::getDisplayListAuxInputs(const QString& groupName) con
         const Channel* channel = group->channelByUserOrder(AuxInputSignal, index);
         if (channel) {
             displayList.append(channel->getNativeName());
-            index++;
+        } else {
+            i--;
         }
+        index++;
     }
     return displayList;
 }
@@ -848,8 +850,10 @@ QStringList SignalSources::getDisplayListSupplyVoltages(const QString& groupName
         Channel* channel = group->channelByUserOrder(SupplyVoltageSignal, index);
         if (channel) {
             displayList.append(channel->getNativeName());
-            index++;
+        } else {
+            i--;
         }
+        index++;
     }
     return displayList;
 }

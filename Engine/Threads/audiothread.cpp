@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -51,6 +51,7 @@ AudioThread::AudioThread(SystemState *state_, WaveformFifo *waveformFifo_, const
 
 void AudioThread::initialize()
 {
+    state->writeToLog("Audio Thread initialize begin");
     // Initialize variables.
     mDevice = QAudioDeviceInfo::defaultOutputDevice();
     currentValue = 0.0F;
@@ -102,6 +103,7 @@ void AudioThread::initialize()
     s = new QDataStream(buf, QIODevice::ReadWrite);
     mAudioOutput = new QAudioOutput(mDevice, mFormat);
     connect(mAudioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(catchError()));
+    state->writeToLog("Audio Thread initialize end");
 }
 
 void AudioThread::run()
@@ -118,6 +120,7 @@ void AudioThread::run()
                 // Wait for samples to arrive from WaveformFifo (enough where, when scaled to 44.1 kHz audio, NumSoundSamples can be written)
                 if (waveformFifo->requestReadNewData(WaveformFifo::ReaderAudio, rawBlockSampleSize)) {
 
+                    state->writeToLog("Start audio loop");
                     s->device()->seek(0);
                     s->writeRawData(finalSoundBytesBuffer, NumSoundBytes);
                     s->device()->seek(0);
@@ -135,25 +138,26 @@ void AudioThread::run()
                     if (mAudioOutput->state() != QAudio::ActiveState) {
                         mAudioOutput->start(s->device());
                     }
+                    state->writeToLog("End audio loop");
                     qApp->processEvents();
 
                 } else {
                     // Probably could sleep here for a while
                     qApp->processEvents();
                 }
-            }
+           }
 
-            // Any 'finish up' code goes here.
-            mAudioOutput->stop();
+           // Any 'finish up' code goes here.
+           mAudioOutput->stop();
 
-            delete [] rawData;
-            delete [] interpFloats;
-            delete [] interpInts;
-            delete [] finalSoundBytesBuffer;
-            delete s;
-            delete buf;
+           delete [] rawData;
+           delete [] interpFloats;
+           delete [] interpInts;
+           delete [] finalSoundBytesBuffer;
+           delete s;
+           delete buf;
 
-            running = false;
+           running = false;
         } else {
             usleep(1000);
         }
@@ -192,7 +196,7 @@ bool AudioThread::fillBufferFromWaveformFifo()
     if (selectedChannelName.isEmpty()) validAudioSource = false;
     QString selectedChannelFilterName = selectedChannelName + "|" + state->audioFilter->getDisplayValueString();
     if (!waveformFifo->gpuWaveformPresent(selectedChannelFilterName.toStdString())) {
-        qDebug() << "Failure...";
+        qDebug() << "Failure... channel name: " << selectedChannelFilterName;
         validAudioSource = false;
     }
     GpuWaveformAddress waveformAddress = waveformFifo->getGpuWaveformAddress(selectedChannelFilterName.toStdString());
@@ -220,6 +224,7 @@ bool AudioThread::fillBufferFromWaveformFifo()
 
 void AudioThread::processAudioData()
 {
+    state->writeToLog("Process audio data start");
     // Do floating point interpolation.
     originalSamplesCopied = 0;
     soundSamplesCopied = 0;
@@ -229,6 +234,10 @@ void AudioThread::processAudioData()
         nextValue = rawData[originalSamplesCopied];
 
         while (interpRatio < 1.0) {
+            // Ensure that no writing beyond allocated memory for interpFloats occurs
+            if (soundSamplesCopied >= NumSoundSamples) {
+                break;
+            }
             interpFloats[soundSamplesCopied++] = currentValue + interpRatio * (nextValue - currentValue);
             interpRatio += dataRatio;
         }
@@ -275,6 +284,7 @@ void AudioThread::processAudioData()
         qToLittleEndian<int16_t>(interpInts[i], ptr);
         ptr += 2;
     }
+    state->writeToLog("Process audio data end");
 }
 
 void AudioThread::catchError()
@@ -285,15 +295,19 @@ void AudioThread::catchError()
         break;
     case QAudio::OpenError:
         qDebug() << "Open Error";
+        state->writeToLog("Open Error");
         break;
     case QAudio::IOError:
         qDebug() << "IO Error";
+        state->writeToLog("IO Error");
         break;
     case QAudio::UnderrunError:
         qDebug() << "Underrun Error";
+        state->writeToLog("Underrun Error");
         break;
     case QAudio::FatalError:
         qDebug() << "Fatal Error";
+        state->writeToLog("Fatal Error");
         break;
     }
 }

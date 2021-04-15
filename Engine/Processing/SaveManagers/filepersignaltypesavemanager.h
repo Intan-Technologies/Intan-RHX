@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -63,6 +63,7 @@ private:
     SaveFile* digitalInputFile;
     SaveFile* digitalOutputFile;
 
+    bool saveAuxInsWithAmps;
     bool saveSpikeSnapshot;
     int samplesPreDetect;
     int samplesPostDetect;

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -137,19 +137,19 @@ private:
     StringItem *reference;
 
     IntRangeItem *userOrder;
-    IntRangeItem *groupID; // 0 = not in a group
+    IntRangeItem *groupID;  // 0 = not in a group
 
     BooleanItem *enabled;
 
     ChannelNameItem *nativeChannelName;
     StringItem *customChannelName;
 
-    BooleanItem *outputToTcp; // Wideband for amplifier channels, unfiltered for all other channels
-    BooleanItem *outputToTcpLow; // Only applies to amplifier channels
-    BooleanItem *outputToTcpHigh; // Only applies to amplifier channels
-    BooleanItem *outputToTcpSpike; // Only applies to amplifier channels
-    BooleanItem *outputToTcpDc; // Only applies to Stim amplifier channels
-    BooleanItem *outputToTcpStim; // Only applies to Stim amplifier channels
+    BooleanItem *outputToTcp;  // Wideband for amplifier channels, unfiltered for all other channels
+    BooleanItem *outputToTcpLow;  // Only applies to amplifier channels
+    BooleanItem *outputToTcpHigh;  // Only applies to amplifier channels
+    BooleanItem *outputToTcpSpike;  // Only applies to amplifier channels
+    BooleanItem *outputToTcpDc;  // Only applies to Stim amplifier channels
+    BooleanItem *outputToTcpStim;  // Only applies to Stim amplifier channels
 
     IntRangeItem *spikeThreshold;
 

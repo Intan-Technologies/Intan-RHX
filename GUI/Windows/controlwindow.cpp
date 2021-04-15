@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -1113,6 +1113,7 @@ void ControlWindow::chooseFileFormatDialog()
     if (fileFormatDialog->exec()) {
         // Store current dialog values before sending update commands, so that GUI updates don't clear any changes.
         QString fileFormat = fileFormatDialog->getFileFormat();
+        bool saveAuxInWithAmpWaveforms = fileFormatDialog->getSaveAuxInWithAmps();
         bool saveWidebandAmplifierWaveforms = fileFormatDialog->getSaveWidebandAmps();
         bool saveLowpassAmplifierWaveforms = fileFormatDialog->getSaveLowpassAmps();
         bool saveHighpassAmplifierWaveforms = fileFormatDialog->getSaveHighpassAmps();
@@ -1130,6 +1131,7 @@ void ControlWindow::chooseFileFormatDialog()
         state->holdUpdate();
 
         state->fileFormat->setValue(fileFormat);
+        state->saveAuxInWithAmpWaveforms->setValue(saveAuxInWithAmpWaveforms);
         state->saveWidebandAmplifierWaveforms->setValue(saveWidebandAmplifierWaveforms);
         state->saveLowpassAmplifierWaveforms->setValue(saveLowpassAmplifierWaveforms);
         state->saveHighpassAmplifierWaveforms->setValue(saveHighpassAmplifierWaveforms);

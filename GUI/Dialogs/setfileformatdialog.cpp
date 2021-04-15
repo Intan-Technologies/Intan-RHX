@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -55,6 +55,7 @@ SetFileFormatDialog::SetFileFormatDialog(SystemState *state_, QWidget *parent) :
     recordTimeSpinBox = new QSpinBox(this);
     state->newSaveFilePeriodMinutes->setupSpinBox(recordTimeSpinBox);    
 
+    saveAuxInWithAmpCheckBox = new QCheckBox(tr("Save Auxiliary Inputs (Accelerometers) in Wideband Amplifier Data File"), this);
     saveWidebandAmplifierWaveformsCheckBox = new QCheckBox(tr("Save Wideband Amplifier Waveforms"), this);
     saveLowpassAmplifierWaveformsCheckBox = new QCheckBox(tr("Save Lowpass Amplifier Waveforms"), this);
     saveHighpassAmplifierWaveformsCheckBox = new QCheckBox(tr("Save Highpass Amplifier Waveforms"), this);
@@ -140,6 +141,7 @@ SetFileFormatDialog::SetFileFormatDialog(SystemState *state_, QWidget *parent) :
     oneFilePerSignalTypeBoxLayout->addWidget(fileFormatNeuroScopeButton);
     oneFilePerSignalTypeBoxLayout->addWidget(oneFilePerSignalTypeDescription);
     oneFilePerSignalTypeBoxLayout->addWidget(NeuroScopeDescription);
+    oneFilePerSignalTypeBoxLayout->addWidget(saveAuxInWithAmpCheckBox);
 
     QVBoxLayout *oneFilePerChannelBoxLayout = new QVBoxLayout;
     oneFilePerChannelBoxLayout->addWidget(fileFormatOpenEphysButton);
@@ -220,6 +222,7 @@ void SetFileFormatDialog::updateFromState()
         fileFormatOpenEphysButton->setChecked(true);
     }
 
+    saveAuxInWithAmpCheckBox->setChecked(state->saveAuxInWithAmpWaveforms->getValue());
     saveWidebandAmplifierWaveformsCheckBox->setChecked(state->saveWidebandAmplifierWaveforms->getValue());
     saveLowpassAmplifierWaveformsCheckBox->setChecked(state->saveLowpassAmplifierWaveforms->getValue());
     saveHighpassAmplifierWaveformsCheckBox->setChecked(state->saveHighpassAmplifierWaveforms->getValue());
@@ -244,6 +247,11 @@ void SetFileFormatDialog::updateFromState()
 QString SetFileFormatDialog::getFileFormat() const
 {
     return state->fileFormat->getValue(buttonGroup->checkedId());
+}
+
+bool SetFileFormatDialog::getSaveAuxInWithAmps() const
+{
+    return saveAuxInWithAmpCheckBox->isChecked();
 }
 
 bool SetFileFormatDialog::getSaveWidebandAmps() const

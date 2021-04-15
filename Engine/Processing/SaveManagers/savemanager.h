@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -95,6 +95,8 @@ protected:
     void convertDcAmplifierValue(uint16_t* dest, const float* voltage, int numSamples) const;
     uint16_t convertAuxInputValue(float voltage) const;
     void convertAuxInputValue(uint16_t* dest, const float* voltage, int numSamples) const;
+    void mergeAmpAndAuxValues(uint16_t* dest, const uint16_t* ampSigned, const float* auxVoltage, int numSamples,
+                              int numAmpChannels, int numAuxChannels) const;
     uint16_t convertSupplyVoltageValue(float voltage) const;
     void convertSupplyVoltageValue(uint16_t* dest, const float* voltage, int numSamples) const;
     uint16_t convertBoardAdcValue(float voltage) const;

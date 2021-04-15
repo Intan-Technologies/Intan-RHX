@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -51,6 +51,7 @@ FilePerSignalTypeSaveManager::FilePerSignalTypeSaveManager(WaveformFifo* wavefor
     digitalInputFile(nullptr),
     digitalOutputFile(nullptr)
 {
+    saveAuxInsWithAmps = false;
     saveSpikeSnapshot = false;
     samplesPreDetect = 0;
     samplesPostDetect = 0;
@@ -71,6 +72,8 @@ bool FilePerSignalTypeSaveManager::openAllSaveFiles()
         return false;       // Cannot create subdirectory.
     }
     QString subdirPath = state->filename->getPath() + "/" + subdirName + "/";
+
+    saveAuxInsWithAmps = state->saveAuxInWithAmpWaveforms->getValue();
 
     // Write settings file.
     state->saveGlobalSettings(subdirPath + "settings.xml");
@@ -183,7 +186,7 @@ bool FilePerSignalTypeSaveManager::openAllSaveFiles()
         }
     }
     if (type != ControllerStimRecordUSB2) {
-        if (!saveList.auxInput.empty()) {
+        if (!saveList.auxInput.empty() && !saveAuxInsWithAmps) {
             auxInputFile = new SaveFile(subdirPath + "auxiliary" + DataFileExtension);
             if (!auxInputFile->isOpen()) {
                 closeAllSaveFiles();
@@ -330,6 +333,11 @@ int64_t FilePerSignalTypeSaveManager::writeToSaveFiles(int numSamples, int timeI
     float* vArray = new float [maxColumns * numSamples];
     uint16_t* uint16Array = new uint16_t [maxColumns * numSamples];
 
+    uint16_t* uint16Array2 = nullptr;
+    if (saveAuxInsWithAmps) {
+        uint16Array2 = new uint16_t [(int) (saveList.amplifier.size() + saveList.auxInput.size()) * numSamples];
+    }
+
     int64_t numBytesWritten = 0;
 
     // Save timestamp data.
@@ -341,7 +349,15 @@ int64_t FilePerSignalTypeSaveManager::writeToSaveFiles(int numSamples, int timeI
     // Save amplifier data.
     if (amplifierFile) {
         waveformFifo->copyGpuAmplifierDataArrayRaw(WaveformFifo::ReaderDisk, uint16Array, amplifierGPUWaveform, timeIndex, numSamples);
-        amplifierFile->writeUInt16AsSigned(uint16Array, numSamples * (int) saveList.amplifier.size());
+        if (!saveAuxInsWithAmps) {
+            amplifierFile->writeUInt16AsSigned(uint16Array, numSamples * (int) saveList.amplifier.size());
+        } else {
+            waveformFifo->copyAnalogDataArray(WaveformFifo::ReaderDisk, vArray, auxInputWaveform, timeIndex, numSamples);
+            mergeAmpAndAuxValues(uint16Array2, uint16Array, vArray, numSamples, (int) saveList.amplifier.size(), (int) auxInputWaveform.size());
+            // Note: When amplifier data and auxiliary input data are saved together in the same amplifier.dat file, we save
+            // auxiliary input data as *signed* 16-bit numbers instead of unsigned to maintain consistency with the amplifier data.
+            amplifierFile->writeUInt16AsSigned(uint16Array2, numSamples * (int) (saveList.amplifier.size() + auxInputWaveform.size()));
+        }
         numBytesWritten += amplifierFile->getNumBytesWritten();
     }
     if (lowpassAmplifierFile) {
@@ -396,7 +412,7 @@ int64_t FilePerSignalTypeSaveManager::writeToSaveFiles(int numSamples, int timeI
 
     if (type != ControllerStimRecordUSB2) {
         // Save auxiliary input data.
-        if (!saveList.auxInput.empty()) {
+        if (!saveList.auxInput.empty() && !saveAuxInsWithAmps) {
             waveformFifo->copyAnalogDataArray(WaveformFifo::ReaderDisk, vArray, auxInputWaveform, timeIndex, numSamples);
             convertAuxInputValue(uint16Array, vArray, numSamples * (int) auxInputWaveform.size());
             auxInputFile->writeUInt16(uint16Array, numSamples * (int) auxInputWaveform.size());

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -52,6 +52,7 @@ public:
 
     void updateFromState();
 
+    bool getSaveAuxInWithAmps() const;
     bool getSaveWidebandAmps() const;
     bool getSaveLowpassAmps() const;
     bool getSaveHighpassAmps() const;
@@ -74,6 +75,7 @@ private slots:
 private:
     SystemState* state;
 
+    QCheckBox *saveAuxInWithAmpCheckBox;
     QCheckBox *saveWidebandAmplifierWaveformsCheckBox;
     QCheckBox *saveLowpassAmplifierWaveformsCheckBox;
     QCheckBox *saveHighpassAmplifierWaveformsCheckBox;

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -140,6 +140,9 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     fileFormat->addItem("OneFilePerSignalType", "OneFilePerSignalType");
     fileFormat->addItem("OneFilePerChannel", "OneFilePerChannel");
     fileFormat->setValue("Traditional");
+
+    saveAuxInWithAmpWaveforms = new BooleanItem("SaveAuxInWithAmplifierWaveforms", globalItems, this, false);
+    saveAuxInWithAmpWaveforms->setRestricted(RestrictIfRunning, RunningErrorMessage);
 
     saveWidebandAmplifierWaveforms = new BooleanItem("SaveWidebandAmplifierWaveforms", globalItems, this, true);
     saveWidebandAmplifierWaveforms->setRestricted(RestrictIfRunning, RunningErrorMessage);
@@ -565,6 +568,7 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     psthChannel = new ChannelNameItem("PSTHChannel", globalItems, this, "N/A");
 
     tSpanPreTriggerPSTH = new DiscreteItemList("PSTHPreTriggerSpanMilliseconds", globalItems, this);
+    tSpanPreTriggerPSTH->addItem("50", "50 ms", 50);
     tSpanPreTriggerPSTH->addItem("100", "100 ms", 100);
     tSpanPreTriggerPSTH->addItem("200", "200 ms", 200);
     tSpanPreTriggerPSTH->addItem("500", "500 ms", 500);
@@ -573,6 +577,7 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     tSpanPreTriggerPSTH->setValue("100");
 
     tSpanPostTriggerPSTH = new DiscreteItemList("PSTHPostTriggerSpanMilliseconds", globalItems, this);
+    tSpanPostTriggerPSTH->addItem("50", "50 ms", 50);
     tSpanPostTriggerPSTH->addItem("100", "100 ms", 100);
     tSpanPostTriggerPSTH->addItem("200", "200 ms", 200);
     tSpanPostTriggerPSTH->addItem("500", "500 ms", 500);

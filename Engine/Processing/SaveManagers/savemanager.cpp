@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -250,6 +250,30 @@ void SaveManager::convertAuxInputValue(uint16_t* dest, const float* voltage, int
         else if (result > 65535) result = 65535;
         *pWrite = result;
         ++pWrite;
+    }
+}
+
+// Special function to combine amplifier data and auxiliary input data (converting from voltage in volts)
+// into single uint16 array.
+void SaveManager::mergeAmpAndAuxValues(uint16_t* dest, const uint16_t* ampSigned, const float* auxVoltage, int numSamples,
+                                       int numAmpChannels, int numAuxChannels) const
+{
+    int result;
+    uint16_t* pWrite = dest;
+    for (int i = 0; i < numSamples; ++i) {
+        for (int j = 0; j < numAmpChannels; ++j) {
+            *pWrite = (*ampSigned);
+            ++pWrite;
+            ++ampSigned;
+        }
+        for (int j = 0; j < numAuxChannels; ++j) {
+            result = ((int) round((*auxVoltage) / 0.0000374F));
+            if (result < 0) result = 0;
+            else if (result > 65535) result = 65535;
+            *pWrite = result;
+            ++pWrite;
+            ++auxVoltage;
+        }
     }
 }
 

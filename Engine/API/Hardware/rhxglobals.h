@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.2
+//  Version 3.0.3
 //
 //  Copyright (c) 2020-2021 Intan Technologies
 //
@@ -33,6 +33,8 @@
 
 #include <QString>
 
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+
 const QString OrganizationName = "Intan Technologies";
 const QString OrganizationDomain = "intantech.com";
 const QString ApplicationName = "IntanRHX";
@@ -47,7 +49,7 @@ const int HASHMARKLENGTH = 5;
 // Software version number (e.g., version 1.3.5)
 #define SOFTWARE_MAIN_VERSION_NUMBER 3
 #define SOFTWARE_SECONDARY_VERSION_NUMBER 0
-#define SOFTWARE_TERTIARY_VERSION_NUMBER 2
+#define SOFTWARE_TERTIARY_VERSION_NUMBER 3
 
 const QString SoftwareVersion = QString::number(SOFTWARE_MAIN_VERSION_NUMBER) + "." +
                                 QString::number(SOFTWARE_SECONDARY_VERSION_NUMBER) + "." +
