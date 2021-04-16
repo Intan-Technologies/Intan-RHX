@@ -11,6 +11,8 @@ The most recent binaries are available from the Intan website: https://intantech
 
 These binaries were built with Qt 5.12.8.
 
+While developers are free to download the source code or fork their own repositories if they wish to make changes to their own versions, we will generally not integrate any of these changes to a public release. If there are features you'd like to see in an official Intan release or you find a bug, please send us feedback!  Thank  you!
+
 # Steps To Run Software
 
 ## All Platforms:
