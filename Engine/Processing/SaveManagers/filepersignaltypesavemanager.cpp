@@ -464,6 +464,7 @@ int64_t FilePerSignalTypeSaveManager::writeToSaveFiles(int numSamples, int timeI
 
     delete [] vArray;
     delete [] uint16Array;
+    if (uint16Array2) delete [] uint16Array2;
 
     return numBytesWritten;
 }
