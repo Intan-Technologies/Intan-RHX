@@ -45,3 +45,12 @@ Intan RHX release notes
 - Fixed bug that sometimes causes crashing when PC audio was enabled.
 - Fixed bug that did not display auxiliary inputs or supply voltages from second headstage when dual headstage adapter was used.
 - Expanded OpenCL compatibility to fix problems with OpenCL initialization on some systems.
+
+* Version 3.0.4, 5 August 2021
+- Fixed small memory leak that occurred when saving in the File Per Signal Type file format.
+- Improved XML settings file parsing so that files that don't include any headstage channels can still be correctly loaded.
+- Minor improvement to make error logging more detailed and efficient.
+- Modify episodic triggered recording algorithm to ignore brief trigger-off events.
+- Improved optimum SPI delay finding algorithm so that setting delay manually is less likely to be necessary.
+- In data file playback mode, electrode impedances are now displayed.
+- Fixed issue with external fast settling in RHD systems not properly triggering as a result of digital input activity
