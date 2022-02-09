@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.4
+//  Version 3.0.5
 //
-//  Copyright (c) 2020-2021 Intan Technologies
+//  Copyright (c) 2020-2022 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -48,21 +48,31 @@ IntanFileSaveManager::~IntanFileSaveManager()
 bool IntanFileSaveManager::openAllSaveFiles()
 {
     dateTimeStamp = getDateTimeStamp();
-    bool firstTime = (subdirName == "");
-    if (firstTime) {  // If subdirectory does not yet exist, create one with initial time/date stamp.
-        subdirName = state->filename->getBaseFilename() + dateTimeStamp;
-        QDir dir(state->filename->getPath());
-        if (!dir.mkdir(subdirName)) {
-            return false;       // Cannot create subdirectory.
+    int bufferSize = calculateBufferSize(state);
+
+    QString subdirPath;
+
+    if (state->createNewDirectory->getValue()) {
+        bool firstTime = (subdirName == "");
+        if (firstTime) {  // If subdirectory does not yet exist, create one with initial time/date stamp.
+            subdirName = state->filename->getBaseFilename() + dateTimeStamp;
+            QDir dir(state->filename->getPath());
+            if (!dir.mkdir(subdirName)) {
+                return false;       // Cannot create subdirectory.
+            }
         }
-    }
-    QString subdirPath = state->filename->getPath() + "/" + subdirName + "/";
-    if (firstTime) {
-        // Write settings file.
+        subdirPath = state->filename->getPath() + "/" + subdirName + "/";
+        if (firstTime) {
+            // Write settings file.
+            state->saveGlobalSettings(subdirPath + "settings.xml");
+        }
+    } else {
+        subdirName = state->filename->getPath();
+        subdirPath = subdirName + "/";
         state->saveGlobalSettings(subdirPath + "settings.xml");
     }
 
-    saveFile = new SaveFile(subdirPath + state->filename->getBaseFilename() + dateTimeStamp + intanFileExtension());
+    saveFile = new SaveFile(subdirPath + state->filename->getBaseFilename() + dateTimeStamp + intanFileExtension(), bufferSize);
     if (!saveFile->isOpen()) {
         closeAllSaveFiles();
         return false;

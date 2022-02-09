@@ -73,6 +73,7 @@ SOURCES += main.cpp \
     Engine/Threads/tcpdataoutputthread.cpp \
     Engine/Threads/usbdatathread.cpp \
     Engine/Threads/waveformprocessorthread.cpp \
+    GUI/Dialogs/advancedstartupdialog.cpp \
     GUI/Dialogs/ampsettledialog.cpp \
     GUI/Dialogs/analogoutconfigdialog.cpp \
     GUI/Dialogs/anoutdialog.cpp \
@@ -92,6 +93,7 @@ SOURCES += main.cpp \
     GUI/Dialogs/psthdialog.cpp \
     GUI/Dialogs/referenceselectdialog.cpp \
     GUI/Dialogs/renamechanneldialog.cpp \
+    GUI/Dialogs/scrollablemessageboxdialog.cpp \
     GUI/Dialogs/setfileformatdialog.cpp \
     GUI/Dialogs/setthresholdsdialog.cpp \
     GUI/Dialogs/spectrogramdialog.cpp \
@@ -189,6 +191,7 @@ HEADERS += \
     Engine/Threads/tcpdataoutputthread.h \
     Engine/Threads/usbdatathread.h \
     Engine/Threads/waveformprocessorthread.h \
+    GUI/Dialogs/advancedstartupdialog.h \
     GUI/Dialogs/ampsettledialog.h \
     GUI/Dialogs/analogoutconfigdialog.h \
     GUI/Dialogs/anoutdialog.h \
@@ -208,6 +211,7 @@ HEADERS += \
     GUI/Dialogs/psthdialog.h \
     GUI/Dialogs/referenceselectdialog.h \
     GUI/Dialogs/renamechanneldialog.h \
+    GUI/Dialogs/scrollablemessageboxdialog.h \
     GUI/Dialogs/setfileformatdialog.h \
     GUI/Dialogs/setthresholdsdialog.h \
     GUI/Dialogs/spectrogramdialog.h \

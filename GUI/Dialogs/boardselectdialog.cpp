@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.4
+//  Version 3.0.5
 //
-//  Copyright (c) 2020-2021 Intan Technologies
+//  Copyright (c) 2020-2022 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -31,6 +31,8 @@
 #include <QSettings>
 #include "datafilereader.h"
 #include "boardselectdialog.h"
+#include "scrollablemessageboxdialog.h"
+#include "advancedstartupdialog.h"
 
 // Check if FrontPanel DLL is loaded, and create an instance of okCFrontPanel.
 BoardIdentifier::BoardIdentifier(QWidget *parent_) :
@@ -319,55 +321,14 @@ bool BoardIdentifier::uploadFpgaBitfileQMessageBox(const QString& filename)
     return true;
 }
 
-ScrollableMessageBox::ScrollableMessageBox(QWidget *parent, const QString &title, const QString &text) :
-    QDialog(parent),
-    message(nullptr),
-    okButton(nullptr)
-{
-    setWindowFlags(windowFlags() ^ Qt::WindowContextHelpButtonHint);
-
-    message = new QLabel(text);
-    message->setTextInteractionFlags(Qt::TextSelectableByMouse);
-
-    okButton = new QPushButton(tr("OK"), this);
-
-    connect(okButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(message);
-    mainLayout->addWidget(okButton);
-
-    QWidget *mainWidget = new QWidget(this);
-    mainWidget->setLayout(mainLayout);
-
-    QScrollArea *scrollArea = new QScrollArea(this);
-    scrollArea->setWidget(mainWidget);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-
-    QVBoxLayout *scrollLayout = new QVBoxLayout;
-    scrollLayout->addWidget(scrollArea);
-
-    setWindowTitle(title);
-    setLayout(scrollLayout);
-
-    // Set dialog initial size to 25% larger than scrollArea's sizeHint - should avoid scroll bars for default size.
-    int initialWidth = std::max((int) round(mainWidget->sizeHint().width() * 1.25), mainWidget->sizeHint().width() + 30);
-    int initialHeight = std::max((int) round(mainWidget->sizeHint().height() * 1.25), mainWidget->sizeHint().height() + 30);
-
-    // If initial height is more than 500, cap it at 500.
-    initialHeight = std::min(500, initialHeight);
-
-    resize(initialWidth, initialHeight);
-
-    setWindowState(windowState() | Qt::WindowActive);
-}
-
 // Create a dialog window for user to select which board's software to initialize.
 BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     QDialog(parent),
     boardTable(nullptr),
     openButton(nullptr),
     playbackButton(nullptr),
+    advancedButton(nullptr),
+    useOpenCL(true),
     defaultSampleRateCheckBox(nullptr),
     defaultSettingsFileCheckBox(nullptr),
     splash(nullptr),
@@ -384,10 +345,11 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     QCoreApplication::setOrganizationDomain(OrganizationDomain);
     QCoreApplication::setApplicationName(ApplicationName);
 
+    // Globally disable unused Context Help buttons from windows/dialogs
+    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+
     // Initialize Board Identifier.
     boardIdentifier = new BoardIdentifier(this);
-
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Determine how many and what type of controllers are connected to this machine.
     controllersInfo = boardIdentifier->getConnectedControllersInfo();
@@ -406,6 +368,12 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     playbackButton = new QPushButton(tr("Data File Playback"), this);
     connect(playbackButton, SIGNAL(clicked()), this, SLOT(playbackDataFile()));
 
+    // Allow the user to open 'Advanced' dialog to allow opting out of OpenCL
+    advancedButton = new QPushButton(tr("Advanced"), this);
+    connect(advancedButton, SIGNAL(clicked()), this, SLOT(advanced()));
+    int advancedButtonSize = advancedButton->sizeHint().width() + 10;
+    advancedButton->setFixedWidth(advancedButtonSize);
+
     defaultSampleRateCheckBox = new QCheckBox(this);
     defaultSettingsFileCheckBox = new QCheckBox(this);
 
@@ -423,6 +391,7 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     mainLayout->addWidget(boardTable);
     mainLayout->addLayout(firstRowLayout);
     mainLayout->addLayout(secondRowLayout);
+    mainLayout->addWidget(advancedButton);
 
     setWindowTitle("Select Intan Controller");
 
@@ -485,7 +454,7 @@ void BoardSelectDialog::showDemoMessageBox()
     bool rememberSettings = false;
 
     DemoSelections demoSelection;
-    DemoDialog demoDialog(&demoSelection, this);
+    DemoDialog demoDialog(&demoSelection, useOpenCL, this);
     demoDialog.exec();
 
     if (demoSelection == DemoPlayback) {
@@ -620,7 +589,7 @@ void BoardSelectDialog::startSoftware(ControllerType controllerType, AmplifierSa
     state = new SystemState(rhxController, stimStepSize, numSPIPorts, expanderConnected);
     state->highDPIScaleFactor = this->devicePixelRatio();  // Use this to adjust graphics for high-DPI monitors.
     state->availableScreenResolution = QGuiApplication::primaryScreen()->geometry();
-    controllerInterface = new ControllerInterface(state, rhxController, boardSerialNumber, dataFileReader, this);
+    controllerInterface = new ControllerInterface(state, rhxController, boardSerialNumber, useOpenCL, dataFileReader, this);
     state->setupGlobalSettingsLoadSave(controllerInterface);
     parser = new CommandParser(state, controllerInterface, this);
     controlWindow = new ControlWindow(state, parser, controllerInterface);
@@ -635,7 +604,7 @@ void BoardSelectDialog::startSoftware(ControllerType controllerType, AmplifierSa
     connect(parser, SIGNAL(stimTriggerPulse(QString)), controllerInterface, SLOT(manualStimTriggerPulse(QString)));
 
     connect(parser, SIGNAL(updateGUIFromState()), controlWindow, SLOT(updateFromState()));
-    connect(parser, SIGNAL(sEndOfLineiveNote(QString)), controllerInterface->saveThread(), SLOT(saveLiveNote(QString)));
+    connect(parser, SIGNAL(sendLiveNote(QString)), controllerInterface->saveThread(), SLOT(saveLiveNote(QString)));
 
     connect(controllerInterface, SIGNAL(TCPErrorMessage(QString)), parser, SLOT(TCPErrorSlot(QString)));
 
@@ -792,14 +761,14 @@ void BoardSelectDialog::playbackDataFile()
     QString report;
     dataFileReader = new DataFileReader(playbackFileName, canReadFile, report);
     if (!canReadFile) {
-        ScrollableMessageBox scrollableMessageBox(this, "Unable to Load Data File", report);
-        scrollableMessageBox.exec();
+        ScrollableMessageBoxDialog msgBox(this, "Unable to Load Data File", report);
+        msgBox.exec();
         delete dataFileReader;
         dataFileReader = nullptr;
         exit(EXIT_FAILURE);
     } else if (!report.isEmpty()) {
-        ScrollableMessageBox scrollableMessageBox(this, "Data File Loaded", report);
-        scrollableMessageBox.exec();
+        ScrollableMessageBoxDialog msgBox(this, "Data File Loaded", report);
+        msgBox.exec();
         QFileInfo fileInfo(playbackFileName);
         settings.setValue("playbackDirectory", fileInfo.absolutePath());
     }
@@ -814,3 +783,8 @@ void BoardSelectDialog::playbackDataFile()
     this->accept();
 }
 
+void BoardSelectDialog::advanced()
+{
+    AdvancedStartupDialog advancedStartupDialog(useOpenCL, this);
+    advancedStartupDialog.exec();
+}

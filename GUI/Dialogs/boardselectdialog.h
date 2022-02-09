@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.4
+//  Version 3.0.5
 //
-//  Copyright (c) 2020-2021 Intan Technologies
+//  Copyright (c) 2020-2022 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -89,17 +89,6 @@ private:
     okCFrontPanel *dev;
 };
 
-class ScrollableMessageBox : public QDialog
-{
-    Q_OBJECT
-public:
-    explicit ScrollableMessageBox(QWidget *parent = nullptr, const QString &title = "", const QString &text = "");
-
-private:
-    QLabel *message;
-    QPushButton *okButton;
-};
-
 class QPushButton;
 class QTableWidget;
 
@@ -117,6 +106,7 @@ private slots:
     void newRowSelected(int row);
     void startBoard(int row);
     void playbackDataFile();
+    void advanced();
 
 private:
     void populateTable();
@@ -129,6 +119,7 @@ private:
     QTableWidget *boardTable;
     QPushButton *openButton;
     QPushButton *playbackButton;
+    QPushButton *advancedButton;
 
     QCheckBox *defaultSampleRateCheckBox;
     QCheckBox *defaultSettingsFileCheckBox;
@@ -147,6 +138,8 @@ private:
     ControllerInterface *controllerInterface;
     CommandParser *parser;
     ControlWindow *controlWindow;
+
+    bool useOpenCL;
 };
 
 #endif // BOARDSELECTDIALOG_H
