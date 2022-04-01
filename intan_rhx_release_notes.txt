@@ -72,3 +72,8 @@ Intan RHX release notes
 - Added more descriptive error/warning messages when channels loaded from XML file are inconsistent with those currently plugged in.
 - Fixed bug where loading data for playback that had aux inputs saved in wideband file wouldn't parse correctly.
 - Fixed bug with external fast settling not properly triggering as a result of digital input activity.
+
+* Version 3.0.6, 1 April 2022
+- Fixed bug with FilePerChannel digital ins/outs not being indexed correctly.
+- Increase max number of columns to 16.
+- Put waveform display in a scroll area so that when too many columns are present to be displayed at once, a scroll bar can be used.

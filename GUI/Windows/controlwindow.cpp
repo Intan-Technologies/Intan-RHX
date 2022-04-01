@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.5
+//  Version 3.0.6
 //
 //  Copyright (c) 2020-2022 Intan Technologies
 //
@@ -258,7 +258,12 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addLayout(controlPanelCol);
     mainLayout->setAlignment(controlPanelCol, Qt::AlignTop);
-    mainLayout->addWidget(multiColumnDisplay);
+
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidget(multiColumnDisplay);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    mainLayout->addWidget(scrollArea);
 
     QWidget *central = new QWidget(this);
     central->setLayout(mainLayout);

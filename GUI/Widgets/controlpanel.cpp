@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.5
+//  Version 3.0.6
 //
 //  Copyright (c) 2020-2022 Intan Technologies
 //
@@ -161,6 +161,7 @@ ControlPanel::ControlPanel(ControllerInterface* controllerInterface_, SystemStat
     QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setWidget(mainWidget);
     scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setMinimumWidth(mainWidget->sizeHint().width());
 
     QVBoxLayout *scrollLayout = new QVBoxLayout;
     scrollLayout->addWidget(scrollArea);
