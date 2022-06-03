@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.6
+//  Version 3.1.0
 //
 //  Copyright (c) 2020-2022 Intan Technologies
 //
@@ -232,6 +232,40 @@ YScaleUsed ControlPanel::slidersEnabled() const
     }
     yScaleUsed.analogIOYScaleUsed = analogSlider->isEnabled();
     return yScaleUsed;
+}
+
+void ControlPanel::setCurrentTabName(QString tabName)
+{
+    if (tabName == tr("BW")) {
+        tabWidget->setCurrentWidget(bandwidthTab);
+    } else if (tabName == tr("Impedance")) {
+        tabWidget->setCurrentWidget(impedanceTab);
+    } else if (tabName == tr("Audio/Analog")) {
+        tabWidget->setCurrentWidget(audioAnalogTab);
+    } else if (tabName == tr("Config")) {
+        tabWidget->setCurrentWidget(configureTab);
+    } else if (tabName == tr("Trigger")) {
+        tabWidget->setCurrentWidget(triggerTab);
+    } else {
+        qDebug() << "Unrecognized tabName.";
+    }
+}
+
+QString ControlPanel::currentTabName() const
+{
+    if (tabWidget->currentWidget() == bandwidthTab) {
+        return tr("BW");
+    } else if (tabWidget->currentWidget() == impedanceTab) {
+        return tr("Impedance");
+    } else if (tabWidget->currentWidget() == audioAnalogTab) {
+        return tr("Audio/Analog");
+    } else if (tabWidget->currentWidget() == configureTab) {
+        return tr("Config");
+    } else if (tabWidget->currentWidget() == triggerTab) {
+        return tr("Trigger");
+    } else {
+        qDebug() << "Unrecognized tab widget.";
+    }
 }
 
 QHBoxLayout* ControlPanel::createSelectionLayout()

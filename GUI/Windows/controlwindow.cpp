@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.0.6
+//  Version 3.1.0
 //
 //  Copyright (c) 2020-2022 Intan Technologies
 //
@@ -293,7 +293,20 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
 
     setStatusBarReady();
     state->writeToLog("Finished setting status bar");
-    resize(1080, 870);
+
+    // Get ControlWindow maximize state, size, position, and ControlPanel expanded state and current tab from QSettings.
+    QSettings settings;
+    QSize defaultSize = QSize(1080, 870);
+    resize(defaultSize);
+    QPoint defaultPos = QPoint(100, 100);
+    move(defaultPos);
+    QByteArray defaultGeometry = saveGeometry();
+    restoreGeometry(settings.value("geometry", defaultGeometry).toByteArray());
+    if (settings.value("isMaximized", isMaximized()).toBool())
+        showMaximized();
+    if (settings.value("isControlPanelExpanded", false).toBool())
+        showControlPanel();
+    controlPanel->setCurrentTabName(settings.value("controlPanelTab", "BW").toString());
 
     state->writeToLog("Finished resizing");
 
@@ -339,6 +352,15 @@ ControlWindow::~ControlWindow()
     if (stimParametersInterface) {
         delete stimParametersInterface;
     }
+
+    // Save ControlWindow maximize state, size, position, and ControlPanel expanded state and current tab to QSettings.
+    QSettings settings;
+    settings.setValue("isMaximized", isMaximized());
+    if (!isMaximized()) {
+        settings.setValue("geometry", saveGeometry());
+    }
+    settings.setValue("isControlPanelExpanded", !controlPanel->isHidden());
+    settings.setValue("controlPanelTab", controlPanel->currentTabName());
 }
 
 void ControlWindow::dragEnterEvent(QDragEnterEvent *event)
@@ -1127,6 +1149,7 @@ void ControlWindow::performance()
         // Get updated settings
         changeUsedXPUIndex(performanceDialog.XPUSelectionComboBox->currentIndex());
         state->writeToDiskLatency->setIndex(performanceDialog.writeLatencyComboBox->currentIndex());
+        state->plottingMode->setIndex(performanceDialog.plottingModeComboBox->currentIndex());
     }
 }
 
@@ -2067,7 +2090,12 @@ void ControlWindow::updateHardwareFifoStatus(double percentFull)
                              "reached maximum capacity.  This happens when the host computer "
                              "cannot process the waveform data quickly enough."
                              "<p>Try running with a lower sample rate or closing other applications "
-                             "to reduce CPU load."));
+                             "to reduce CPU load."
+                             "<p>In the Performance menu there is an option "
+                             "to enable the high-efficiency method of plotting. If the "
+                             "workload of plotting (for example, with multiple high-resolution monitors) "
+                             "was the cause of this buffer overrun, we recommend trying this mode. "
+                             "Performance will likely be significantly improved."));
     }
 
     double cpuLoad = max(mainCpuLoad, controllerInterface->latestWaveformProcessorCpuLoad());
