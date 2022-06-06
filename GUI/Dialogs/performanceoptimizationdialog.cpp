@@ -90,9 +90,9 @@ PerformanceOptimizationDialog::PerformanceOptimizationDialog(SystemState* state_
 
     QVBoxLayout *plottingModeGroupBoxLayout = new QVBoxLayout;
     plottingModeGroupBoxLayout->addWidget(new QLabel(tr("For large resolution monitors, the Original method of plotting may be too\n"
-                                                        "slow to keep up in real-time. The High Efficiency plotting mode\n"
-                                                        "significantly improves performance by only plotting the most recently acquired\n"
-                                                        "sections of the waveforms. This feature only works for sweep mode."), this));
+                                                        "slow to keep up in real time. High Efficiency plotting mode significantly\n"
+                                                        "improves performance by only plotting the most recently acquired sections\n"
+                                                        "of the waveforms. This feature works only for sweep mode."), this));
     plottingModeGroupBoxLayout->addLayout(plottingModeRow);
 
     QGroupBox *XPUGroupBox = new QGroupBox(tr("XPU"), this);

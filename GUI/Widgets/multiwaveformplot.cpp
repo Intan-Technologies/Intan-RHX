@@ -327,7 +327,7 @@ bool MultiWaveformPlot::event(QEvent* event)
 
 void MultiWaveformPlot::paintEvent(QPaintEvent* /* event */)
 {
-    if (state->plottingMode->getValue() == "Original") {
+    if (state->plottingMode->getValue() == "Original" || state->rollMode->getValue()) {
         // ORIGINAL
             //QElapsedTimer timer;
             //timer.start();
