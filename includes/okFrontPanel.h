@@ -598,14 +598,14 @@ okDLLEXPORT void DLL_ENTRY okError_Free(okError* err);
 // The functions return the version of the library actually used during
 // run-time, which may be different from the version the application was
 // compiled with.
-okDLLEXPORT int DLL_ENTRY okFrontPanel_GetAPIVersionMajor();
-okDLLEXPORT int DLL_ENTRY okFrontPanel_GetAPIVersionMinor();
-okDLLEXPORT int DLL_ENTRY okFrontPanel_GetAPIVersionMicro();
+okDLLEXPORT int DLL_ENTRY okFrontPanelDLL_GetAPIVersionMajor();
+okDLLEXPORT int DLL_ENTRY okFrontPanelDLL_GetAPIVersionMinor();
+okDLLEXPORT int DLL_ENTRY okFrontPanelDLL_GetAPIVersionMicro();
 
-okDLLEXPORT const char* DLL_ENTRY okFrontPanel_GetAPIVersionString();
+okDLLEXPORT const char* DLL_ENTRY okFrontPanelDLL_GetAPIVersionString();
 
 // Return true if the library version is at least equal to the given one.
-okDLLEXPORT Bool DLL_ENTRY okFrontPanel_CheckAPIVersion(int major, int minor, int micro);
+okDLLEXPORT Bool DLL_ENTRY okFrontPanelDLL_CheckAPIVersion(int major, int minor, int micro);
 
 // This function is special and doesn't really need to be called at all if the
 // DLL is always available, as it will be always loaded anyhow. It is mostly
@@ -615,7 +615,7 @@ inline Bool okFrontPanel_TryLoadLib()
 {
 #ifdef okDELAY_LOAD_FRONTPANEL
 	__try {
-		return okFrontPanel_CheckAPIVersion(0, 0, 0);
+		return okFrontPanelDLL_CheckAPIVersion(0, 0, 0);
 	} __except (ok_DelayLoadDllExceptionFilter(GetExceptionInformation())) {
 		return FALSE;
 	}
@@ -1275,15 +1275,15 @@ typedef OpalKellyLegacy::okCDeviceSensors DeviceSensors;
 
 // These functions deal with run-time version information, unlike compile-time
 // OK_API_VERSION_XXX constants.
-inline int GetAPIVersionMajor() { return okFrontPanel_GetAPIVersionMajor(); }
-inline int GetAPIVersionMinor() { return okFrontPanel_GetAPIVersionMinor(); }
-inline int GetAPIVersionMicro() { return okFrontPanel_GetAPIVersionMicro(); }
+inline int GetAPIVersionMajor() { return okFrontPanelDLL_GetAPIVersionMajor(); }
+inline int GetAPIVersionMinor() { return okFrontPanelDLL_GetAPIVersionMinor(); }
+inline int GetAPIVersionMicro() { return okFrontPanelDLL_GetAPIVersionMicro(); }
 
-inline const char* GetAPIVersionString() { return okFrontPanel_GetAPIVersionString(); }
+inline const char* GetAPIVersionString() { return okFrontPanelDLL_GetAPIVersionString(); }
 
 inline bool CheckAPIVersion(int major, int minor, int micro)
 {
-	return okFrontPanel_CheckAPIVersion(major, minor, micro) == TRUE;
+	return okFrontPanelDLL_CheckAPIVersion(major, minor, micro) == TRUE;
 }
 
 namespace Impl
