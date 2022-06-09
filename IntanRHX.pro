@@ -263,11 +263,19 @@ DISTFILES += kernel.cl
 
 INCLUDEPATH += $$PWD/includes/
 
+contains(QMAKE_TARGET.arch, x86){
+    LIBDIR=$$PWD/libraries/x86_64
+}
+else{
+    LIBDIR=$$PWD/libraries/armhf
+}
+
+
 # Windows
 win32: {
-LIBS += -L$$PWD/libraries/Windows/ -lOpenCL # OpenCL library
-LIBS += -L$$PWD/libraries/Windows/ -lokFrontPanel # Opal Kelly Front Panel library
-LIBS += -L$$PWD/libraries/Windows/ -ldelayimp # Microsoft's Delay Import library
+LIBS += -L$$LIBDIR/Windows/ -lOpenCL # OpenCL library
+LIBS += -L$$LIBDIR/Windows/ -lokFrontPanel # Opal Kelly Front Panel library
+LIBS += -L$$LIBDIR/Windows/ -ldelayimp # Microsoft's Delay Import library
 QMAKE_LFLAGS += /DELAYLOAD:okFrontPanel.dll # Use delayimp to only load okFrontPanel.dll when necessary,
                                             # so we can give an error message when okFrontPanel.dll is missing
 }
@@ -275,13 +283,13 @@ QMAKE_LFLAGS += /DELAYLOAD:okFrontPanel.dll # Use delayimp to only load okFrontP
 # Mac
 mac: {
 LIBS += -framework OpenCL # Mac OS X built-in OpenCL library
-LIBS += -L$$PWD/libraries/Mac/ -lokFrontPanel # Opal Kelly Front Panel library
+LIBS += -L$$LIBDIR/Mac/ -lokFrontPanel # Opal Kelly Front Panel library
 }
 
 # Linux
 unix:!macx: {
-LIBS += -L$$PWD/libraries/Linux/ -lOpenCL # OpenCL library
-LIBS += -L$$PWD/libraries/Linux/ -lokFrontPanel # Opal Kelly Front Panel library
+LIBS += -L$$LIBDIR/Linux/ -lOpenCL # OpenCL library
+LIBS += -L$$LIBDIR/Linux/ -lokFrontPanel # Opal Kelly Front Panel library
 QMAKE_LFLAGS += '-Wl,-rpath,\'\$$ORIGIN\'' # Flag that at runtime, look for shared libraries (like
                                            # libokFrontPanel.so) at the same directory as the binary
 }
