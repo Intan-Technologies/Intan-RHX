@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.1.0
+//  Version 3.2.0
 //
-//  Copyright (c) 2020-2022 Intan Technologies
+//  Copyright (c) 2020-2023 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -34,7 +34,7 @@
 
 USBDataThread::USBDataThread(AbstractRHXController* controller_, DataStreamFifo* usbFifo_, QObject *parent) :
     QThread(parent),
-    errorChecking(true),
+    errorChecking(controller_->acquisitionMode() != PlaybackMode),
     controller(controller_),
     usbFifo(usbFifo_),
     keepGoing(false),
@@ -101,6 +101,9 @@ void USBDataThread::run()
                 // with or without error checking enabled.
 
                 numBytesRead = (int) controller->readDataBlocksRaw(numUsbBlocksToRead, &usbBuffer[usbBufferIndex]);
+                if (numBytesRead == -1) {
+                    break;
+                }
 
                 bytesInBuffer = usbBufferIndex + numBytesRead;
                 if (numBytesRead > 0) {

@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.1.0
+//  Version 3.2.0
 //
-//  Copyright (c) 2020-2022 Intan Technologies
+//  Copyright (c) 2020-2023 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -86,9 +86,11 @@ signals:
     void setStatusBar(QString text);
     void setStatusBarReadyPlayback();
     void jumpToStart();
+    void jumpToEnd();
     void jumpToPosition(QString target);
     void jumpRelative(double jumpInSeconds);
     void setDataFileReaderSpeed(double playbackSpeed);
+    void setDataFileReaderLive(bool isLive);
 
 public slots:
     void updateFromState();
@@ -136,6 +138,7 @@ private slots:
 
     void fastPlaybackSlot();
     void jumpToStartSlot();
+    void jumpToEndSlot();
     void jumpBack1SecSlot();
     void jumpBack10SecSlot();
     void jumpToPositionSlot();
@@ -225,6 +228,7 @@ private:
     QAction *rewindAction;
     QAction *fastForwardAction;
     QAction *fastPlaybackAction;
+    QAction *jumpToEndAction;
     QAction *jumpToStartAction;
     QAction *jumpBack1SecAction;
     QAction *jumpBack10SecAction;
