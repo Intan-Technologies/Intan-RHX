@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -118,6 +118,6 @@ void DemoDialog::playback()
 
 void DemoDialog::advanced()
 {
-    AdvancedStartupDialog advancedStartupDialog(*useOpenCL, *playbackPorts, this);
+    AdvancedStartupDialog advancedStartupDialog(*useOpenCL, *playbackPorts, true, this);
     advancedStartupDialog.exec();
 }

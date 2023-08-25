@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -215,7 +215,7 @@ int SyntheticRHXController::getNumSPIPorts(bool &expanderBoardDetected)
 // of -2 if RHD2216 devices are present so that the user can be reminded that RHD2216 devices consume 32 channels
 // of USB bus bandwidth.
 int SyntheticRHXController::findConnectedChips(vector<ChipType> &chipType, vector<int> &portIndex, vector<int> &commandStream,
-                                               vector<int> &numChannelsOnPort, bool synthMaxChannels)
+                                               vector<int> &numChannelsOnPort, bool synthMaxChannels, bool returnToFastSettle)
 {
     int maxNumStreams = maxNumDataStreams();
     int maxSPIPorts = maxNumSPIPorts();

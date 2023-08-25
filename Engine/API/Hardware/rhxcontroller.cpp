@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -1731,7 +1731,7 @@ void RHXController::uploadCommandList(const vector<unsigned int> &commandList, A
 // of -2 if RHD2216 devices are present so that the user can be reminded that RHD2216 devices consume 32 channels
 // of USB bus bandwidth.
 int RHXController::findConnectedChips(vector<ChipType> &chipType, vector<int> &portIndex, vector<int> &commandStream,
-                                      vector<int> &numChannelsOnPort, bool /* synthMaxChannels */)
+                                      vector<int> &numChannelsOnPort, bool /* synthMaxChannels */, bool returnToFastSettle)
 {
     int returnValue = 1;    // return 1 == everything okay
     int maxNumStreams = maxNumDataStreams();
@@ -1781,6 +1781,11 @@ int RHXController::findConnectedChips(vector<ChipType> &chipType, vector<int> &p
         for (int stream = 1; stream < maxNumStreams; stream += 2) {
             enableDataStream(stream, false);
         }
+    }
+
+    if (type != ControllerStimRecord) {
+        // For RHD, switch all ports to AuxCmd3, bank 0 to make sure run occurs with calibration
+        selectAuxCommandBankAllPorts(AuxCmd3, 0);
     }
 
     // Run the SPI interface for multiple command sequences (i.e., NRepeats data blocks).
@@ -2002,6 +2007,11 @@ int RHXController::findConnectedChips(vector<ChipType> &chipType, vector<int> &p
         }
     }
 
+    if (type != ControllerStimRecord) {
+        // For RHD, switch all ports back to AuxCmd3 bank 1 or 2 to make sure run occurs without calibration
+        selectAuxCommandBankAllPorts(AuxCmd3, returnToFastSettle ? 2 : 1);
+    }
+
     return returnValue;
 }
 
@@ -2034,7 +2044,7 @@ int RHXController::getNumSPIPorts(okCFrontPanel* dev_, bool isUSB3, bool& expand
 
     // Now that 7310 is used for both Recording and Stim/Recording Controllers, isUSB3 is no longer a reliable marker of the correct
     // WireIn/Out addresses for these variables.
-    // TODO - clarify - actually, since initial board scan bit file is RHD 7310 file, we shouldn't use different RHS endpoints at this point.
+    // Since initial board scan bit file is RHD 7310 file, we shouldn't use different RHS endpoints at this point.
     // Once that actual RHS bit file is uploaded, those endpoints will be different, but at this point they will always be consistent with RHD.
     int WireOutSerialDigitalIn = endPointWireOutSerialDigitalIn(isUSB3);
     int WireInSerialDigitalInCntl = endPointWireInSerialDigitalInCntl(isUSB3);

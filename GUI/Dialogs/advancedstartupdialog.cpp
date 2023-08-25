@@ -1,7 +1,7 @@
 #include "advancedstartupdialog.h"
 #include <QtWidgets>
 
-AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playbackPorts_, QWidget *parent) :
+AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playbackPorts_, bool demoMode_, QWidget *parent) :
     QDialog(parent),
     useOpenCLDescription(nullptr),
     useOpenCLCheckBox(nullptr),
@@ -17,6 +17,7 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
     playbackGCheckBox(nullptr),
     playbackHCheckBox(nullptr),
     playbackPorts(&playbackPorts_),
+    demoMode(demoMode_),
     buttonBox(nullptr),
     useOpenCL(&useOpenCL_),
     tempUseOpenCL(useOpenCL_)
@@ -74,9 +75,17 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
 
     synthMaxChannelsCheckBox = new QCheckBox(tr("Maximum Number of Channels in Demonstration Mode"), this);
 
+    testModeDescription = new QLabel(tr("When running in chip test mode, replace typical recording functionality with\n"
+                                           "automated testing."), this);
+
+    testModeCheckBox = new QCheckBox(tr("Chip Test Mode"));
+
     QSettings settings;
     synthMaxChannelsCheckBox->setChecked(settings.value("synthMaxChannels", false).toBool());
     connect(synthMaxChannelsCheckBox, SIGNAL(clicked(bool)), this, SLOT(changeSynthMaxChannels(bool)));
+
+    testModeCheckBox->setChecked(settings.value("testMode", false).toBool());
+    connect(testModeCheckBox, SIGNAL(clicked(bool)), this, SLOT(changeTestMode(bool)));
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -100,24 +109,38 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
     playbackControlLayout->addWidget(playbackGCheckBox);
     playbackControlLayout->addWidget(playbackHCheckBox);
 
-    QGroupBox *playbackControlGroupBox = new QGroupBox(tr("Playback Control"), this);
+    playbackControlGroupBox = new QGroupBox(tr("Playback Control"), this);
     playbackControlGroupBox->setLayout(playbackControlLayout);
 
     QVBoxLayout *synthMaxChannelsLayout = new QVBoxLayout;
     synthMaxChannelsLayout->addWidget(synthMaxChannelsDescription);
     synthMaxChannelsLayout->addWidget(synthMaxChannelsCheckBox);
 
-    QGroupBox *synthMaxChannelsGroupBox = new QGroupBox(tr("Demonstration Mode Data Generation"), this);
+    synthMaxChannelsGroupBox = new QGroupBox(tr("Demonstration Mode Data Generation"), this);
     synthMaxChannelsGroupBox->setLayout(synthMaxChannelsLayout);
+
+    QVBoxLayout *testModeLayout = new QVBoxLayout;
+    testModeLayout->addWidget(testModeDescription);
+    testModeLayout->addWidget(testModeCheckBox);
+
+    QGroupBox *testModeGroupBox = new QGroupBox(tr("Chip Test Mode"), this);
+    testModeGroupBox->setLayout(testModeLayout);
+    testModeGroupBox->setDisabled(demoMode);
+
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, demoMode ? Qt::gray : Qt::black);
+    testModeGroupBox->setPalette(palette);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(openCLGroupBox);
     mainLayout->addWidget(playbackControlGroupBox);
     mainLayout->addWidget(synthMaxChannelsGroupBox);
+    mainLayout->addWidget(testModeGroupBox);
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Advanced Startup Settings"));
+    updateUIForTestMode();
 }
 
 // Encoded as HGFEDCBA
@@ -153,10 +176,30 @@ void AdvancedStartupDialog::changeSynthMaxChannels(bool max)
     tempSynthMaxChannels = max;
 }
 
+void AdvancedStartupDialog::changeTestMode(bool test)
+{
+    tempTest = test;
+    updateUIForTestMode();
+}
+
+void AdvancedStartupDialog::updateUIForTestMode()
+{
+    bool testModeSelected = testModeCheckBox->isChecked() && !demoMode;
+
+    playbackControlGroupBox->setDisabled(testModeSelected);
+    synthMaxChannelsGroupBox->setDisabled(testModeSelected);
+
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, testModeSelected ? Qt::gray : Qt::black);
+    playbackControlGroupBox->setPalette(palette);
+    synthMaxChannelsGroupBox->setPalette(palette);
+}
+
 void AdvancedStartupDialog::accept()
 {
     QSettings settings;
     settings.setValue("synthMaxChannels", tempSynthMaxChannels);
+    settings.setValue("testMode", tempTest);
 
     *useOpenCL = tempUseOpenCL;
 

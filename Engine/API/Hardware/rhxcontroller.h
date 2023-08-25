@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -121,7 +121,7 @@ public:
     void uploadCommandList(const vector<unsigned int> &commandList, AuxCmdSlot auxCommandSlot, int bank = 0) override;
 
     int findConnectedChips(vector<ChipType> &chipType, vector<int> &portIndex, vector<int> &commandStream,
-                           vector<int> &numChannelsOnPort, bool = false) override;
+                           vector<int> &numChannelsOnPort, bool = false, bool returnToFastSettle = false) override;
 
     // Physical board only
     static void resetBoard(okCFrontPanel* dev_);

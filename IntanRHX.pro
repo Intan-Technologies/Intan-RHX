@@ -103,6 +103,7 @@ SOURCES += main.cpp \
     GUI/Dialogs/triggerrecorddialog.cpp \
     GUI/Dialogs/waveformselectdialog.cpp \
     GUI/Widgets/abstractfigure.cpp \
+    GUI/Widgets/abstractpanel.cpp \
     GUI/Widgets/anoutfigure.cpp \
     GUI/Widgets/controlpanelaudioanalogtab.cpp \
     GUI/Widgets/controlpanelbandwidthtab.cpp \
@@ -128,6 +129,7 @@ SOURCES += main.cpp \
     GUI/Widgets/statusbars.cpp \
     GUI/Widgets/stimfigure.cpp \
     GUI/Widgets/tcpdisplay.cpp \
+    GUI/Widgets/testcontrolpanel.cpp \
     GUI/Widgets/voltagespinbox.cpp \
     GUI/Widgets/waveformdisplaycolumn.cpp \
     GUI/Widgets/waveformdisplaymanager.cpp \
@@ -221,6 +223,7 @@ HEADERS += \
     GUI/Dialogs/triggerrecorddialog.h \
     GUI/Dialogs/waveformselectdialog.h \
     GUI/Widgets/abstractfigure.h \
+    GUI/Widgets/abstractpanel.h \
     GUI/Widgets/anoutfigure.h \
     GUI/Widgets/controlpanelaudioanalogtab.h \
     GUI/Widgets/controlpanelbandwidthtab.h \
@@ -246,6 +249,7 @@ HEADERS += \
     GUI/Widgets/statusbars.h \
     GUI/Widgets/stimfigure.h \
     GUI/Widgets/tcpdisplay.h \
+    GUI/Widgets/testcontrolpanel.h \
     GUI/Widgets/voltagespinbox.h \
     GUI/Widgets/waveformdisplaycolumn.h \
     GUI/Widgets/waveformdisplaymanager.h \

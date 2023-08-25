@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -107,7 +107,7 @@ public:
     void uploadCommandList(const vector<unsigned int>&, AuxCmdSlot, int) override {}
 
     int findConnectedChips(vector<ChipType> &chipType, vector<int> &portIndex, vector<int> &commandStream,
-                           vector<int> &numChannelsOnPort, bool synthMaxChannels = false) override;
+                           vector<int> &numChannelsOnPort, bool synthMaxChannels = false, bool returnToFastSettle = false) override;
 
 private:
     unsigned int numWordsInFifo() override;

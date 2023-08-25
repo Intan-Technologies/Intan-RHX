@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.2.0
+//  Version 3.3.0
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -128,8 +128,6 @@ void GPUInterface::speedTest()
 
 void GPUInterface::initializeKernelMemory()
 {
-    state->writeToLog("Beginning of initializeKernelMemory");
-
     hoops = new ChannelHoopsStruct[channels];
 
     globalParametersHandle = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(GlobalParamStruct), nullptr, &ret);
@@ -167,8 +165,6 @@ void GPUInterface::initializeKernelMemory()
 
     gpuStartSearchPosHandle = clCreateBuffer(context, CL_MEM_READ_WRITE, channels * sizeof(uint16_t), nullptr, &ret);
     if (ret != CL_SUCCESS) qDebug() << "Error I11";
-
-    state->writeToLog("Buffers initialized");
 
     // Initialize sources and sinks.
     spike = new uint32_t[totalSnippetsPerBlock * DiagnosticBlocks];
@@ -229,8 +225,6 @@ void GPUInterface::initializeKernelMemory()
 //        gpuHoops[c].useHoops = 1; // 1 = true, 0 = false
 //    }
 
-    state->writeToLog("Sources and sinks initialized");
-
     // Set kernel args.
     ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void*)&globalParametersHandle);
     if (ret != CL_SUCCESS) qDebug() << "J0";
@@ -278,7 +272,6 @@ void GPUInterface::initializeKernelMemory()
     globalParameters.sampleRate = sampleRate;
     globalParameters.spikeMax = 100.0f;
     globalParameters.spikeMaxEnabled = 1;
-    state->writeToLog("Global parameters populated");
 
     // Prep before loop.
     parsedPrevHighOriginal = new uint16_t[SnippetSize * channels];
@@ -288,8 +281,6 @@ void GPUInterface::initializeKernelMemory()
     parsedPrevHigh = parsedPrevHighOriginal;
     inputIndex = 0, outputIndex = 0, spikeIndex = 0;
     allocated = true;
-
-    state->writeToLog("Prep before loop complete. End of initializeKernelMemory()");
 }
 
 bool GPUInterface::setupMemory()
@@ -393,7 +384,6 @@ bool GPUInterface::findPlatformDevices()
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_PROFILE, (size_t) nullptr, nullptr, &size); // get size of profile char array
         returnedString = new char[size];
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_PROFILE, size, returnedString, nullptr); // get profile char array
-        //qDebug() << "Profile: " << returnedString;
         state->writeToLog("Profile: " + QString(returnedString));
         delete [] returnedString;
 
@@ -401,7 +391,6 @@ bool GPUInterface::findPlatformDevices()
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_VERSION, (size_t) nullptr, nullptr, &size); // get size of version char array
         returnedString = new char[size];
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_VERSION, size, returnedString, nullptr); // get version char array
-        //qDebug() << "Version: " << returnedString;
         state->writeToLog("Version: " + QString(returnedString));
         delete [] returnedString;
 
@@ -409,7 +398,6 @@ bool GPUInterface::findPlatformDevices()
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_NAME, (size_t) nullptr, nullptr, &size); // get size of name char array
         returnedString = new char[size];
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_NAME, size, returnedString, nullptr); // get name char array
-        //qDebug() << "Name: " << returnedString;
         state->writeToLog("Name: " + QString(returnedString));
         delete [] returnedString;
 
@@ -417,7 +405,6 @@ bool GPUInterface::findPlatformDevices()
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_VENDOR, (size_t) nullptr, nullptr, &size); // get size of vendor char array
         returnedString = new char[size];
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_VENDOR, size, returnedString, nullptr); // get vendor char array
-        //qDebug() << "Vendor: " << returnedString;
         state->writeToLog("Vendor: " + QString(returnedString));
         delete [] returnedString;
 
@@ -425,7 +412,6 @@ bool GPUInterface::findPlatformDevices()
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_EXTENSIONS, (size_t) nullptr, nullptr, &size); // get size of extensions char array
         returnedString = new char[size];
         clGetPlatformInfo(platformIds[platformIndex], CL_PLATFORM_EXTENSIONS, size, returnedString, nullptr); // get extensions char array
-        //qDebug() << "Extensions: " << returnedString;
         state->writeToLog("Extensions: " + QString(returnedString));
         delete [] returnedString;
 
@@ -478,7 +464,6 @@ bool GPUInterface::createKernel(int devIndex)
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_EXTENSIONS, (size_t) nullptr, nullptr, &size); // Get size of extensions char array.
     returnedString = new char[size];
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_EXTENSIONS, size, returnedString, nullptr); // Get extensions char array.
-    //qDebug() << "Device extension: " << returnedString;
     state->writeToLog("Device extensions: " + QString(returnedString));
     delete [] returnedString;
 
@@ -486,21 +471,18 @@ bool GPUInterface::createKernel(int devIndex)
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_VENDOR, (size_t) nullptr, nullptr, &size); // Get size of vendor char array.
     returnedString = new char[size];
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_VENDOR, size, returnedString, nullptr); // Get vendor char array.
-    //qDebug() << "Device vendor: " << returnedString;
     state->writeToLog("Device vendor: " + QString(returnedString));
     delete [] returnedString;
 
     // Vendor ID of this device
     cl_uint returnedUint = 0;
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_VENDOR_ID, sizeof(returnedUint), &returnedUint, nullptr); // Get vendor id.
-    //qDebug() << "Device vendor id: " << returnedUint;
     state->writeToLog("Device vendor id: " + QString::number(returnedUint));
 
     // Version of this device
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_VERSION, (size_t) nullptr, nullptr, &size); // Get size of version char array.
     returnedString = new char[size];
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_VERSION, size, returnedString, nullptr); // Get version char array.
-    //qDebug() << "Device version: " << returnedString;
     state->writeToLog("Device version: " + QString(returnedString));
     delete [] returnedString;
 
@@ -508,7 +490,6 @@ bool GPUInterface::createKernel(int devIndex)
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DRIVER_VERSION, (size_t) nullptr, nullptr, &size); // Get size of driver version char array.
     returnedString = new char[size];
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DRIVER_VERSION, size, returnedString, nullptr); // Get driver version char array.
-    //qDebug() << "Device driver version: " << returnedString;
     state->writeToLog("Device driver version: " + QString(returnedString));
     delete [] returnedString;
 
@@ -516,42 +497,35 @@ bool GPUInterface::createKernel(int devIndex)
     // Get deviceCompilerAvailable.
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_COMPILER_AVAILABLE, sizeof(deviceCompilerAvailable), &deviceCompilerAvailable, nullptr);
     QString deviceCompilerAvailableString = deviceCompilerAvailable == CL_TRUE ? "True" : "False";
-    //qDebug() << "Device compiler available: " << deviceCompilerAvailableString;
     state->writeToLog("Device compiler available: " + deviceCompilerAvailableString);
 
     cl_ulong returnedUlong = 0;
     // Get local mem size
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(returnedUlong), &returnedUlong, nullptr);
-    //qDebug() << "Device local mem size: " << returnedUlong;
     state->writeToLog("Device local mem size: " + QString::number(returnedUlong));
 
     // Get global mem size
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(returnedUlong), &returnedUlong, nullptr);
-    //qDebug() << "Device global mem size: " << returnedUlong;
     state->writeToLog("Device global mem size: " + QString::number(returnedUlong));
 
     size_t maxParameterSize;
     // Get max parameter size
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_MAX_PARAMETER_SIZE, sizeof(maxParameterSize), &maxParameterSize, nullptr);
-    //qDebug() << "Device max parameter size: " << maxParameterSize;
     state->writeToLog("Device max parameter size: " + QString::number(maxParameterSize));
 
     size_t maxWorkGroupSize;
     // Get max work group size
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(maxWorkGroupSize), &maxWorkGroupSize, nullptr);
-    //qDebug() << "Device max work group size: " << maxWorkGroupSize;
     state->writeToLog("Device max work group size: " + QString::number(maxWorkGroupSize));
 
     // Get max constant buffer size
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE, sizeof(returnedUlong), &returnedUlong, nullptr);
-    //qDebug() << "Device max constant buffer size: " << returnedUlong;
     state->writeToLog("Device max constant buffer size: " + QString::number(returnedUlong));
 
     deviceAvailable = CL_FALSE;
     // Get deviceAvailable.
     clGetDeviceInfo(state->gpuList[gpuIndex].deviceId, CL_DEVICE_AVAILABLE, sizeof(deviceAvailable), &deviceAvailable, nullptr);
     QString deviceAvailableString = deviceAvailable == CL_TRUE ? "True" : "False";
-    //qDebug() << "Device available: " << deviceAvailableString;
     state->writeToLog("Device available: " + deviceAvailableString);
     id = state->gpuList[gpuIndex].deviceId;
 
