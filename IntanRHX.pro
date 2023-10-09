@@ -280,6 +280,9 @@ QMAKE_LFLAGS += /DELAYLOAD:okFrontPanel.dll # Use delayimp to only load okFrontP
 mac: {
 LIBS += -framework OpenCL # Mac OS X built-in OpenCL library
 LIBS += -L$$PWD/libraries/Mac/ -lokFrontPanel # Opal Kelly Front Panel library
+APP_QML_FILES.files = kernel.cl
+APP_QML_FILES.path = Contents/MacOS
+QMAKE_BUNDLE_DATA += APP_QML_FILES
 }
 
 # Linux
