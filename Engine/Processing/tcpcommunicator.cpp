@@ -50,14 +50,10 @@ bool TCPCommunicator::connectionAvailable()
 
 void TCPCommunicator::establishConnection()
 {
-    static bool firstConnection = true;
     if (connectionAvailable()) {
         socket = server->nextPendingConnection();
-        if (firstConnection) {
-            connect(socket, SIGNAL(readyRead()), this, SLOT(emitReadyRead()));
-            connect(socket, SIGNAL(disconnected()), this, SLOT(returnToDisconnected()));
-        }
-        firstConnection = false;
+        connect(socket, SIGNAL(readyRead()), this, SLOT(emitReadyRead()));
+        connect(socket, SIGNAL(disconnected()), this, SLOT(returnToDisconnected()));
         server->close();
         status = Connected;
         emit statusChanged();
