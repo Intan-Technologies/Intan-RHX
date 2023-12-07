@@ -15,7 +15,7 @@ HelpDialogCheckInputWave::HelpDialogCheckInputWave(QWidget *parent) :
     QLabel *label2 = new QLabel("Measured frequency should be between 90 Hz and 110 Hz to proceed with chip testing.", this);
     label2->setWordWrap(true);
 
-    QLabel *label3 = new QLabel("Measured amplitude should be between 300 " + MicroVoltsSymbol + " and 500 " + MicroVoltsSymbol + " to proceed with chip testing.", this);
+    QLabel *label3 = new QLabel("Measured amplitude should be between 300 " + MicroVoltsSymbol + " and 600 " + MicroVoltsSymbol + " to proceed with chip testing.", this);
     label3->setWordWrap(true);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -92,10 +92,22 @@ TestControlPanel::TestControlPanel(ControllerInterface *controllerInterface_, Ab
     reportPresent(false),
     helpDialogCheckInputWave(nullptr),
     helpDialogTestChip(nullptr),
-    helpDialogUploadTestStimParameters(nullptr)
+    helpDialogUploadTestStimParameters(nullptr),
+    previousDelay(-1),
+    portComboBox(nullptr)
 {
     setFocusPolicy(Qt::StrongFocus);
     this->setFocus();
+
+    portComboBox = new QComboBox(this);
+    portComboBox->addItems(QStringList({"Port A", "Port B", "Port C", "Port D"}));
+    if (state->numSPIPorts == 8) {
+        portComboBox->addItems(QStringList({"Port E", "Port F", "Port G", "Port H"}));
+    }
+
+    QHBoxLayout *portRow = new QHBoxLayout;
+    portRow->addWidget(portComboBox);
+    portRow->addStretch();
 
     QHBoxLayout *checkInputWaveRow = new QHBoxLayout;
     checkInputWaveButton = new QPushButton(tr("Check Input Waveform"), this);
@@ -228,6 +240,7 @@ TestControlPanel::TestControlPanel(ControllerInterface *controllerInterface_, Ab
     connectedChannelsLabel = new QLabel("", this);
 
     QVBoxLayout *testingGroupLayout = new QVBoxLayout;
+    testingGroupLayout->addLayout(portRow);
     testingGroupLayout->addWidget(checkInputWaveGroupBox);
     testingGroupLayout->addWidget(testChipGroupBox);
     testingGroupLayout->addWidget(connectedChannelsLabel);
@@ -597,7 +610,7 @@ void TestControlPanel::checkInputWave()
 
     // Default setting for time scale, 400 ms is suitable for a 100 Hz wave.
     timeScaleComboBox->setCurrentIndex(5);
-    state->yScaleWide->setValue("500");
+    state->yScaleWide->setValue("600");
 
     // Run for 0.6 seconds for dummy data
     QProgressDialog progress(QObject::tr("Checking Input Wave"), QString(), 0, 6);
@@ -657,7 +670,7 @@ void TestControlPanel::checkInputWave()
     if (A < 300) {
         measuredAmplitudeFeedback->setText("Low: target 400 uV");
         measuredAmplitudeFeedback->setStyleSheet(styleSheetRed);
-    } else if (A > 500) {
+    } else if (A > 600) {
         measuredAmplitudeFeedback->setText("High: target 400 uV");
         measuredAmplitudeFeedback->setStyleSheet(styleSheetRed);
     } else {
@@ -1782,7 +1795,7 @@ void TestControlPanel::eliminateAverageOffset(QVector<double> &channel)
 
 void TestControlPanel::testChip()
 {
-    configureTab->rescanPorts();
+    configureTab->rescanPorts(true, portComboBox->currentIndex());
     state->clipWaveforms->setValue(false);
 
     int numPorts = 0;
@@ -1838,7 +1851,7 @@ void TestControlPanel::testChip()
 
     //Run for 3 seconds for dummy data
     //for (int i = 0; i < 30; i++) {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5; i++) {
         recordDummySegment(0.1, portIndex);
     }
     progress.setValue(3);
@@ -1852,6 +1865,23 @@ void TestControlPanel::testChip()
 
     //Subtract the average value from each of the waveforms (to eliminate transient offset)
     eliminateAverageOffset(channels);
+
+    // Get largest max - min difference across data. If less than 40 uV, chip is likely dead.
+    double maxSample, minSample = 0;
+    for (int stream = 0; stream < ampData.size(); stream++) {
+        for (int channel = 0; channel < ampData[stream].size(); channel++) {
+            for (int index = 0; index < ampData[stream][channel].size(); index++) {
+                double thisSample = ampData[stream][channel][index];
+                if (thisSample > maxSample) maxSample = thisSample;
+                if (thisSample < minSample) minSample = thisSample;
+            }
+        }
+    }
+    bool allChannelsDead = false;
+    if (maxSample - minSample < 40.0) {
+        allChannelsDead = true;
+    }
+
 
     //Determine median waveform of the channels
     QVector<double> median;
@@ -1885,7 +1915,12 @@ void TestControlPanel::testChip()
     int restarts = 0;
     progress.setValue(5);
 
+    int finalLoops = 0;
+
     while (restarts < 50) {
+
+        // Don't bother iterating over loop if it's clear that channels are dead.
+        if (allChannelsDead) break;
 
         QVector<double> offset_f;
         offset_f.reserve(3);
@@ -1947,10 +1982,25 @@ void TestControlPanel::testChip()
             progress.setValue(progress.value() + 1);
         }
 
+        if (finalLoops >= 2) {
+            break;
+        }
+
+        // Escape early if threshold is met.
+        // Check if all channels satisfy channels_report requirement - if so, can escape early.
+        double maxError = 0;
+        double threshold = triangleErrorThresholdLineEdit->text().toDouble();
+        for (int channel = 0; channel < channels.size(); channel++) {
+            double thisError = rmsError(t, channels[channel], p_initial[0], p_initial[1], p_initial[2]);
+            maxError = max(maxError, thisError);
+        }
+        if (maxError < threshold) {
+            finalLoops++;
+        }
+
         restarts++;
     }
 
-    rmsError(t, median, p_initial[0], p_initial[1], p_initial[2]);
     progress.setValue(11);
     p_initial[2] = fmod(p_initial[2], 2*PI);
 
@@ -1963,8 +2013,8 @@ void TestControlPanel::testChip()
     if (p_final[0] < 90 || p_final[0] > 110)
         p_final[0] = 100;
 
-    //Make sure low-error amplitude isn't outside the range 300 to 500 uV
-    if (p_final[1] < 300 || p_final[1] > 500)
+    //Make sure low-error amplitude isn't outside the range 300 to 600 uV
+    if (p_final[1] < 300 || p_final[1] > 600)
         p_final[1] = 400;
 
     //double y_final = y_initial;
@@ -2174,6 +2224,12 @@ int TestControlPanel::calculateVoltages(QVector<double> dcData, QVector<double> 
         }
     }
     if (firstRisingEdge == -1) {
+        // positiveThreshold never gets reached.
+        // So, populate posVoltages with a single value - the highest sample value reached in what should be the positive region,
+        // and populate negVoltages with a single value - the lowest sample value reached in what should be the negative region,
+        // and return 1 (error).
+        posVoltages.append(*max_element(dcData.begin() + transientSamplesToIgnore, dcData.begin() + 400));
+        negVoltages.append(*min_element(dcData.begin() + 400 + transientSamplesToIgnore, dcData.begin() + 800));
         qDebug() << "violates expected A";
         return 1;
     }
@@ -2181,31 +2237,17 @@ int TestControlPanel::calculateVoltages(QVector<double> dcData, QVector<double> 
     // 2) Check for 6 repeats of: 400 samples at expectedVoltage ... 400 samples at -expectedVoltage ... 800 samples at 0 V
     int errorFlag = 0;
     int currentIndex = firstRisingEdge + transientSamplesToIgnore;
-    //qDebug() << "Starting first cycle at index: " << currentIndex;
     for (int cycle = 0; cycle < cycles; cycle++) {
         // All of the next 390 samples should be between positiveLowerBound and positiveUpperBound
         //for (int sample = currentIndex; sample < 400 - transientSamplesToIgnore; ++sample) {
         for (int sample = currentIndex; sample < currentIndex + 400 - transientSamplesToIgnore; ++sample) {
             posVoltages.append(dcData[sample]);
-//            if (dcData[sample] < positiveLowerBound || dcData[sample] > positiveUpperBound) {
-//                qDebug() << "violates expected B... cycle: " << cycle << " sample index: " << sample << " voltage: " << dcData[sample];
-//                errorFlag = 1;
-//            } else {
-//                //qDebug() << "Appending to positive: " << dcData[sample];
-//                posVoltages.append(dcData[sample]);
-//            }
         }
         currentIndex += 400;
         // All of the next 390 samples should be between negativeLowerBound and negativeUpperBound
         //for (int sample = currentIndex; sample < 400 - transientSamplesToIgnore; ++sample) {
         for (int sample = currentIndex; sample < currentIndex + 400 - transientSamplesToIgnore; ++sample) {
             negVoltages.append(dcData[sample]);
-//            if (dcData[sample] < negativeLowerBound || dcData[sample] > negativeUpperBound) {
-//                qDebug() << "violates expected C... cycle: " << cycle << " sample index: " << sample << " voltage: " << dcData[sample];
-//                errorFlag = 1;
-//            } else {
-//                negVoltages.append(dcData[sample]);
-//            }
         }
         currentIndex += 400; // Look 10 samples beyond the transient
         // All of the next 790 samples should between zeroLowerBound and zeroUpperBound

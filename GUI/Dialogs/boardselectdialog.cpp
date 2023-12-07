@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -634,7 +634,7 @@ void BoardSelectDialog::startSoftware(ControllerType controllerType, AmplifierSa
     }
 
     QSettings settings;
-    bool testMode = settings.value("testMode", false).toBool() && mode == LiveMode;
+    bool testMode = (settings.value("chipTestMode", "").toString() == "Intan Chip Test Mode") && mode == LiveMode;
 
     state = new SystemState(rhxController, stimStepSize, numSPIPorts, expanderConnected, testMode, dataFileReader);
     state->highDPIScaleFactor = this->devicePixelRatio();  // Use this to adjust graphics for high-DPI monitors.
@@ -643,6 +643,7 @@ void BoardSelectDialog::startSoftware(ControllerType controllerType, AmplifierSa
     state->setupGlobalSettingsLoadSave(controllerInterface);
     parser = new CommandParser(state, controllerInterface, this);
     controlWindow = new ControlWindow(state, parser, controllerInterface, rhxController);
+    parser->controlWindow = controlWindow;
 
     connect(controlWindow, SIGNAL(sendExecuteCommand(QString)), parser, SLOT(executeCommandSlot(QString)));
     connect(controlWindow, SIGNAL(sendExecuteCommandWithParameter(QString,QString)), parser, SLOT(executeCommandWithParameterSlot(QString, QString)));
@@ -772,7 +773,7 @@ void BoardSelectDialog::startBoard(int row)
     if (boardTable->item(row, 0)->text() == RHS128chString || boardTable->item(row, 0)->text() == RHS128ch_7310String) controllerType = ControllerStimRecord;
 
     QSettings settings;
-    bool testMode = settings.value("testMode", false).toBool();
+    bool testMode = settings.value("chipTestMode", "").toString() == "Intan Chip Test Mode";
     settings.beginGroup(ControllerTypeSettingsGroup[(int)controllerType]);
     if (defaultSampleRateCheckBox->isChecked()) {
         sampleRate = (AmplifierSampleRate) settings.value("defaultSampleRate", 14).toInt();

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -720,6 +720,9 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     tScaleSpikeScope->addItem("2", "2 ms", 2.0);
     tScaleSpikeScope->addItem("4", "4 ms", 4.0);
     tScaleSpikeScope->addItem("6", "6 ms", 6.0);
+    tScaleSpikeScope->addItem("10", "10 ms", 10.0);
+    tScaleSpikeScope->addItem("16", "16 ms", 16.0);
+    tScaleSpikeScope->addItem("20", "20 ms", 20.0);
     tScaleSpikeScope->setValue("2");
     numSpikesDisplayed = new DiscreteItemList("SpikeScopeNumSpikes", globalItems, this);
     numSpikesDisplayed->addItem("10", "10", 10);
@@ -786,6 +789,10 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     stimParamsHaveChanged = false;
 
     writeToLog("Created stim only variables");
+
+    usePreviousDelay = new BooleanItem("UsePreviousDelay", globalItems, this, false, XMLGroupNone);
+    previousDelaySelectedPort = new IntRangeItem("PreviousDelaySelectedPort", globalItems, this, 0, 7, 0, XMLGroupNone);
+    lastDetectedChip = new IntRangeItem("LastDetectedChip", globalItems, this, -1, 1000, -1, XMLGroupNone);
 
     // Start timer
     timerId = startTimer(20);  // Minimum time between two stateChanged() signals, in milliseconds.

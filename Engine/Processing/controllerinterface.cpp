@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -291,7 +291,20 @@ int ControllerInterface::scanPorts(vector<ChipType> &chipType, vector<int> &port
 {
     // Scan SPI Ports.
     QSettings settings;
-    int warningCode = rhxController->findConnectedChips(chipType, portIndex, commandStream, numChannelsOnPort, settings.value("synthMaxChannels", false).toBool(), state->manualFastSettleEnabled->getValue());
+    int warningCode = rhxController->findConnectedChips(chipType, portIndex, commandStream,
+                                                        numChannelsOnPort, settings.value("synthMaxChannels", false).toBool(),
+                                                        state->manualFastSettleEnabled->getValue(),
+                                                        state->usePreviousDelay->getValue(),
+                                                        state->previousDelaySelectedPort->getValue(),
+                                                        state->lastDetectedChip->getValue());
+
+    for (int i = 0; i < chipType.size(); i++) {
+        if (chipType[i] != NoChip) {
+            state->lastDetectedChip->setValue((int) chipType[i]);
+            break;
+        }
+    }
+
     if (warningCode == -1) {
         QMessageBox::warning(nullptr, tr("Capacity of RHD USB Interface Exceeded"),
                              tr("This RHD USB interface board can support only 256 amplifier channels."
@@ -430,6 +443,16 @@ void ControllerInterface::enablePlaybackChannels()
         SignalGroup* group = state->signalSources->groupByIndex(i);
         QString groupPrefix = group->getPrefix();
         int index = fileInfo->groupIndex(groupPrefix);
+        // If this group prefix can't be found, and it's one of the prefixes that had a name
+        // change from the original USB Interface Board software, try looking for the original
+        // prefix name.
+        if (index == -1) {
+            if (groupPrefix == "DIGITAL-IN") index = fileInfo->groupIndex("DIN");
+            else if (groupPrefix == "DIGITAL-OUT") index = fileInfo->groupIndex("DOUT");
+            else if (groupPrefix == "ANALOG-IN") index = fileInfo->groupIndex("ADC");
+        }
+
+        // If this group prefix still can't be found, print an error.
         if (index == -1) {
             cerr << "ControllerInterface::enablePlaybackChannels: Could not find group with prefix " <<
                     groupPrefix.toStdString() << '\n';
@@ -438,6 +461,16 @@ void ControllerInterface::enablePlaybackChannels()
             for (int i = 0; i < fileGroup.numChannels(); ++i) {
                 const HeaderFileChannel& fileChannel = fileGroup.channels[i];
                 Channel* channel = state->signalSources->channelByName(fileChannel.nativeChannelName);
+                // If this channel can't be found, and it's one of the channel names that had a name
+                // change from the original USB Interface Board software, try looking for the same
+                // channel with the original naming convention.
+                if (!channel) {
+                    if (groupPrefix == "DIGITAL-IN" || groupPrefix == "DIGITAL-OUT" || groupPrefix == "ANALOG-IN") {
+                        QString nativeChannelName = groupPrefix + fileChannel.nativeChannelName.right(3);
+                        channel = state->signalSources->channelByName(nativeChannelName);
+                    }
+                }
+
                 if (channel) {
                     channel->setEnabled(fileChannel.enabled);
                 } else {

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -50,14 +50,10 @@ bool TCPCommunicator::connectionAvailable()
 
 void TCPCommunicator::establishConnection()
 {
-    static bool firstConnection = true;
     if (connectionAvailable()) {
         socket = server->nextPendingConnection();
-        if (firstConnection) {
-            connect(socket, SIGNAL(readyRead()), this, SLOT(emitReadyRead()));
-            connect(socket, SIGNAL(disconnected()), this, SLOT(returnToDisconnected()));
-        }
-        firstConnection = false;
+        connect(socket, SIGNAL(readyRead()), this, SLOT(emitReadyRead()));
+        connect(socket, SIGNAL(disconnected()), this, SLOT(returnToDisconnected()));
         server->close();
         status = Connected;
         emit statusChanged();
@@ -122,7 +118,6 @@ void TCPCommunicator::returnToDisconnected()
         // Before disconnecting, if any data is on the socket, grab it.
         cachedCommands = socket->readAll();
         // Disconnect and destroy socket
-        socket->disconnectFromHost();
         disconnect(socket, SIGNAL(readyRead()), this, SLOT(emitReadyRead()));
         disconnect(socket, SIGNAL(disconnected()), this, SLOT(returnToDisconnected()));
         socket = nullptr;

@@ -84,7 +84,8 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
     synthMaxChannelsCheckBox->setChecked(settings.value("synthMaxChannels", false).toBool());
     connect(synthMaxChannelsCheckBox, SIGNAL(clicked(bool)), this, SLOT(changeSynthMaxChannels(bool)));
 
-    testModeCheckBox->setChecked(settings.value("testMode", false).toBool());
+    QString testModeString = settings.value("chipTestMode", "").toString();
+    testModeCheckBox->setChecked(testModeString == "Intan Chip Test Mode");
     connect(testModeCheckBox, SIGNAL(clicked(bool)), this, SLOT(changeTestMode(bool)));
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
@@ -137,7 +138,18 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
     mainLayout->addWidget(synthMaxChannelsGroupBox);
     mainLayout->addWidget(testModeGroupBox);
     mainLayout->addWidget(buttonBox);
-    setLayout(mainLayout);
+
+    QWidget *mainWidget = new QWidget(this);
+    mainWidget->setLayout(mainLayout);
+
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidget(mainWidget);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QVBoxLayout *scrollLayout = new QVBoxLayout;
+    scrollLayout->addWidget(scrollArea);
+
+    setLayout(scrollLayout);
 
     setWindowTitle(tr("Advanced Startup Settings"));
     updateUIForTestMode();
@@ -199,7 +211,8 @@ void AdvancedStartupDialog::accept()
 {
     QSettings settings;
     settings.setValue("synthMaxChannels", tempSynthMaxChannels);
-    settings.setValue("testMode", tempTest);
+    QString testModeString = tempTest ? "Intan Chip Test Mode" : "";
+    settings.setValue("chipTestMode", testModeString);
 
     *useOpenCL = tempUseOpenCL;
 

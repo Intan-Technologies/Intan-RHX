@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -54,7 +54,7 @@ signals:
     void sendNoteCommand(QString);
 
 public slots:
-    void rescanPorts();
+    void rescanPorts(bool usePreviousDelay=false, int selectedPort=0);
     void enableFastSettle(bool enable);
 
 private slots:

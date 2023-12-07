@@ -159,6 +159,8 @@ private:
     QVector<double> channels_report_neg;
     QVector<ChannelInfo*> report;
 
+    QComboBox *portComboBox;
+
     void checkDCWaveforms();
     int calculateVoltages(QVector<double> dcData, QVector<double> &posVoltages, QVector<double> &negVoltages);
     bool posAvgInBounds(double avgVoltage);
@@ -201,6 +203,8 @@ private:
     double vectorAvg(QVector<double> vect, int start, int end);
 
     int ttlOut[16];
+
+    int previousDelay;
 };
 
 #endif // TESTCONTROLPANEL_H

@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -282,7 +282,7 @@ void ControlPanelConfigureTab::updateForStop()
     enableNotes(true);
 }
 
-void ControlPanelConfigureTab::rescanPorts()
+void ControlPanelConfigureTab::rescanPorts(bool usePreviousDelay, int selectedPort)
 {
     // Create a dummy progress bar to show that the rescan has been executed.  (Not necessary, but good user feedback.)
     int maxProgress = 25;
@@ -290,6 +290,9 @@ void ControlPanelConfigureTab::rescanPorts()
     progress.setWindowTitle(QObject::tr("Progress"));
     progress.setMinimumDuration(0);
     progress.setModal(true);
+
+    state->usePreviousDelay->setValue(usePreviousDelay);
+    state->previousDelaySelectedPort->setValue(selectedPort);
 
     QElapsedTimer timer;
     timer.start();

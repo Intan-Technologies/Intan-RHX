@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -376,6 +376,10 @@ public:
 
     SingleItemList globalItems;
     FilenameItemList stateFilenameItems;
+
+    BooleanItem *usePreviousDelay;
+    IntRangeItem *previousDelaySelectedPort;
+    IntRangeItem *lastDetectedChip;
 
     int64_t getPlaybackBlocks();
     void setLastTimestamp(int timestamp) { lastTimestamp = timestamp; }

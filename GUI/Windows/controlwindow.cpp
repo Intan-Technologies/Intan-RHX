@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -307,6 +307,8 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
         title += tr(" - Demonstration Mode");
     } else if (state->playback->getValue()) {
         title += tr(" - Playback Mode: ") + controllerInterface->playbackFileName();
+    } else if (state->testMode->getValue()) {
+        title += tr(" - Chip Testing Mode (Use Advanced settings on startup to return to normal data acquisition mode.)");
     }
     setWindowTitle(title);
 
@@ -1040,6 +1042,11 @@ void ControlWindow::updateForStop()
 
     controlPanel->updateForStop();
     multiColumnDisplay->updateForStop();
+}
+
+QString ControlWindow::getDisplaySettingsString()
+{
+    return multiColumnDisplay->getDisplaySettingsString();
 }
 
 void ControlWindow::stopAndReportAnyErrors()

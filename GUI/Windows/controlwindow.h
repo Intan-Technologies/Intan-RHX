@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.0
+//  Version 3.3.1
 //
 //  Copyright (c) 2020-2023 Intan Technologies
 //
@@ -76,6 +76,12 @@ public:
     void enableSelectedChannels(bool enable) { multiColumnDisplay->enableSelectedChannels(enable); }
     bool loadSettingsFile(QString filename);
     void restoreDisplaySettings();
+
+    void updateForLoad();
+    void updateForStop();
+    QString getDisplaySettingsString();
+
+    XMLInterface* stimParametersInterface;
 
 signals:
     void sendSetCommand(QString parameter, QString value);
@@ -313,8 +319,6 @@ private:
 
     QSpacerItem *showHideStretch;
 
-    XMLInterface* stimParametersInterface;
-
     StimParametersClipboard *stimClipboard;
 
     bool currentlyRunning;
@@ -329,8 +333,6 @@ private:
     void updateForFilename(bool valid);
     void updateLiveNotesDialog();
     void updateForRun();
-    void updateForLoad();
-    void updateForStop();
 
     void createActions();
     void createMenus();
