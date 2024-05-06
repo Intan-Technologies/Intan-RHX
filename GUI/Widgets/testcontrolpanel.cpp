@@ -2,6 +2,8 @@
 #include "testcontrolpanel.h"
 #include "controlwindow.h"
 
+#include <algorithm>
+
 HelpDialogCheckInputWave::HelpDialogCheckInputWave(QWidget *parent) :
     QDialog(parent)
 {
@@ -1704,7 +1706,7 @@ double TestControlPanel::median(const QVector<double> &arr)
     }
 
     //Arrange 'arrCopy' lowest to highest
-    qSort(arrCopy);
+    std::sort(arrCopy.begin(), arrCopy.end());
 
     //if odd # of elements...
     if ((arrCopy.size() % 2) == 1)
@@ -2642,9 +2644,9 @@ void TestControlPanel::saveReport()
         }
         QTextStream out(&csvFile);
         if (state->getControllerTypeEnum() == ControllerStimRecord) {
-            out << "Channel Number,Triangle Error,Stim Error,Avg Positive Voltage, Avg Negative Voltage" << endl;
+            out << "Channel Number,Triangle Error,Stim Error,Avg Positive Voltage, Avg Negative Voltage" << Qt::endl;
         } else {
-            out << "Channel Number,Triangle Error,Settle Error" << endl;
+            out << "Channel Number,Triangle Error,Settle Error" << Qt::endl;
         }
 
         for (int channel = 0; channel < report.size(); channel++) {
@@ -2653,11 +2655,11 @@ void TestControlPanel::saveReport()
             if (state->getControllerTypeEnum() == ControllerStimRecord) {
                 out << report.at(channel)->variableError << ",";
                 out << report.at(channel)->posAvg << ",";
-                out << report.at(channel)->negAvg << endl;
+                out << report.at(channel)->negAvg << Qt::endl;
             } else {
-                out << report.at(channel)->variableError << endl;
+                out << report.at(channel)->variableError << Qt::endl;
             }
-            //out << report.at(channel)->variableError << endl;
+            //out << report.at(channel)->variableError << Qt::endl;
         }
         csvFile.close();
     }

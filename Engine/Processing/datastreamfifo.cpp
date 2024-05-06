@@ -45,7 +45,7 @@ DataStreamFifo::DataStreamFifo(int bufferSize_, int maxReadLength_) :
 {
     int bufferSizeWithExtra = bufferSize + maxReadLength;
     memoryNeededGB = sizeof(uint16_t) * bufferSizeWithExtra / (1024.0 * 1024.0 * 1024.0);
-    cout << "DataStreamFifo: Allocating " << 2 * bufferSizeWithExtra / 1.0e6 << " MBytes for FIFO buffer." << '\n';
+    std::cout << "DataStreamFifo: Allocating " << 2 * bufferSizeWithExtra / 1.0e6 << " MBytes for FIFO buffer." << std::endl;
     buffer = nullptr;
 
     memoryAllocated = true;
@@ -53,11 +53,11 @@ DataStreamFifo::DataStreamFifo(int bufferSize_, int maxReadLength_) :
         buffer = new uint16_t [bufferSizeWithExtra];
     } catch (std::bad_alloc&) {
         memoryAllocated = false;
-        cerr << "Error: DataStreamFifo constructor could not allocate " << memoryNeededGB << " GB of memory." << '\n';
+        std::cerr << "Error: DataStreamFifo constructor could not allocate " << memoryNeededGB << " GB of memory." << std::endl;
     }
 
     if (!buffer) {
-        cerr << "Error: DataStreamFifo constructor could not allocate " << 2 * bufferSizeWithExtra << " bytes of memory." << '\n';
+        std::cerr << "Error: DataStreamFifo constructor could not allocate " << 2 * bufferSizeWithExtra << " bytes of memory." << std::endl;
     }
     resetBuffer();
 }

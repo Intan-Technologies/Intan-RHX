@@ -1,7 +1,7 @@
 #
 # Docker file for Intan RHX CI
 #
-FROM ubuntu:focal
+FROM ubuntu:noble
 
 # prepare
 RUN mkdir -p /build/ci/

@@ -387,9 +387,6 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     QCoreApplication::setOrganizationDomain(OrganizationDomain);
     QCoreApplication::setApplicationName(ApplicationName);
 
-    // Globally disable unused Context Help buttons from windows/dialogs
-    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
-
     // Initialize Board Identifier.
     boardIdentifier = new BoardIdentifier(this);
 

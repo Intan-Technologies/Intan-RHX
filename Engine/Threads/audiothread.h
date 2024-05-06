@@ -32,7 +32,8 @@
 #define AUDIOTHREAD_H
 
 #include <QThread>
-#include <QAudioOutput>
+#include <QAudioSink>
+#include <QAudioFormat>
 #include <cstdint>
 #include <mutex>
 #include "systemstate.h"
@@ -94,20 +95,18 @@ private:
     int originalSamplesCopied;
     int soundSamplesCopied;
 
-    volatile bool keepGoing;
-    volatile bool running;
-    volatile bool stopThread;
+    std::atomic_bool keepGoing;
+    std::atomic_bool running;
+    std::atomic_bool stopThread;
 
     float currentValue;
     float nextValue;
     double interpRatio;
     int interpLength;
 
-    QAudioDeviceInfo mDevice;
-    QByteArray* buf;
-    QDataStream* s;
-    QAudioOutput* mAudioOutput;
     QAudioFormat mFormat;
+    std::unique_ptr<QAudioSink> mAudioSink;
+    QDataStream* s;
 
     QString currentChannelString;
 

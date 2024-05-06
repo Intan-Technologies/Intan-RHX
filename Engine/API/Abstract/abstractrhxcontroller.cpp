@@ -62,7 +62,7 @@ AbstractRHXController::AbstractRHXController(ControllerType type_, AmplifierSamp
     pipeReadErrorCode(0)
 {
     usbBufferSize = MaxNumBlocksToRead * BytesPerWord * RHXDataBlock::dataBlockSizeInWords(type, maxNumDataStreams());
-    cout << "RHXController: Allocating " << usbBufferSize / 1.0e6 << " MBytes for USB buffer.\n";
+    std::cout << "RHXController: Allocating " << usbBufferSize / 1.0e6 << " MBytes for USB buffer." << std::endl;
     usbBuffer = nullptr;
     usbBuffer = new uint8_t [usbBufferSize];
     numDataStreams = 0;

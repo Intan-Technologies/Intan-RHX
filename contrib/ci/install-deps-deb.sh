@@ -34,8 +34,7 @@ eatmydata apt-get install -yq --no-install-recommends \
 
 # Intan RHX build dependencies
 eatmydata apt-get install -yq --no-install-recommends \
-    libqt5xmlpatterns5-dev \
     ocl-icd-opencl-dev \
-    qt5-qmake \
-    qtbase5-dev \
-    qtmultimedia5-dev
+    qmake6 \
+    qt6-base-dev \
+    qt6-multimedia-dev

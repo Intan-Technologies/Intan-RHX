@@ -401,7 +401,7 @@ void PageView::mousePressEvent(QMouseEvent *event)
     QWidget::mousePressEvent(event);
 
     // If mouse wheel is clicked (regardless of mouse mode), start scrolling.
-    if (event->button() == Qt::MidButton) {
+    if (event->button() == Qt::MiddleButton) {
         scrolling = true;
         scrollStartX = xPixelsToUnitValue(event->pos().x());
         scrollStartY = yPixelsToUnitValue(event->pos().y());
@@ -451,7 +451,7 @@ void PageView::mouseReleaseEvent(QMouseEvent *event)
     QWidget::mouseReleaseEvent(event);
 
     // If mouse wheel was unclicked (regardless of mouse mode), end scrolling.
-    if (event->button() == Qt::MidButton) {
+    if (event->button() == Qt::MiddleButton) {
         scrolling = false;
         if (mouseMode == Scroll) {
             this->setCursor(Qt::OpenHandCursor);
@@ -587,7 +587,7 @@ void PageView::resizeEvent(QResizeEvent* /* event */)
     update();
 }
 
-void PageView::enterEvent(QEvent* /* event */)
+void PageView::enterEvent(QEnterEvent* /* event */)
 {
     mousePresent = true;
 

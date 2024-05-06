@@ -640,9 +640,9 @@ void ControlWindow::createActions()
 
 
     QPixmap jumpToEndPixmap(":/images/tostarticon.png");
-    QMatrix rm;
-    rm.rotate(180);
-    jumpToEndPixmap = jumpToEndPixmap.transformed(rm);
+    QTransform transform;
+    transform.rotate(180);
+    jumpToEndPixmap = jumpToEndPixmap.transformed(transform);
     QIcon jumpToEndIcon(jumpToEndPixmap);
     jumpToEndAction = new QAction(jumpToEndIcon, tr("Jump to End"), this);
     connect(jumpToEndAction, SIGNAL(triggered()), this, SLOT(jumpToEndSlot()));
@@ -1541,22 +1541,22 @@ void ControlWindow::keyPressEvent(QKeyEvent *event)
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->viewReport();
             }
-            break;
         }
+        break;
     case Qt::Key_U:
         if (state->testMode->getValue()) {
             if (!state->running && state->getControllerTypeEnum() == ControllerStimRecord) {
                 ((TestControlPanel*) controlPanel)->uploadStimManual();
             }
-            break;
         }
+        break;
     case Qt::Key_C:
         if (state->testMode->getValue()) {
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->checkInputWave();
             }
-            break;
         }
+        break;
     case Qt::Key_Space:
         if (state->testMode->getValue()) {
             if (!state->running) {
@@ -1564,15 +1564,15 @@ void ControlWindow::keyPressEvent(QKeyEvent *event)
             } else {
                 stopControllerSlot();
             }
-            break;
         }
+        break;
     case Qt::Key_R:
         if (state->testMode->getValue()) {
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->rescanPorts();
             }
-            break;
         }
+        break;
 
     default:
         QWidget::keyPressEvent(event);

@@ -30,6 +30,8 @@
 
 #include "renamechanneldialog.h"
 
+#include <QRegularExpressionValidator>
+
 RenameChannelDialog::RenameChannelDialog(const QString& nativeName, const QString& oldName, QWidget* parent) :
     QDialog(parent)
 {
@@ -40,8 +42,9 @@ RenameChannelDialog::RenameChannelDialog(const QString& nativeName, const QStrin
     oldNameLayout->addWidget(new QLabel(tr("Old channel name: ") + oldName + addNativeName, this));
 
     nameLineEdit = new QLineEdit;
-    QRegExp regExp("[\\w-\\+\\./]{1,16}");  // Name must be 1-16 characters, alphanumeric or _-+./
-    nameLineEdit->setValidator(new QRegExpValidator(regExp, this));
+    QRegularExpression regExp("[\\w-\\+\\./]{1,16}");  // Name must be 1-16 characters, alphanumeric or _-+./
+    auto reValidator = new QRegularExpressionValidator(regExp, this);
+    nameLineEdit->setValidator(reValidator);
 
     connect(nameLineEdit, SIGNAL(textChanged(const QString &)),
             this, SLOT(onLineEditTextChanged()));

@@ -2,4 +2,4 @@
 # -*- mode: makefile; coding: utf-8 -*-
 
 %:
-	dh $@
+	dh $@ --buildsystem=qmake6

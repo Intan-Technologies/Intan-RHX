@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml multimedia network widgets
+QT += core gui xml multimedia network widgets
 
 TARGET = IntanRHX
 TEMPLATE = app
