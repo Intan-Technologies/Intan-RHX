@@ -40,11 +40,11 @@ class DigFigure : public AbstractFigure
     Q_OBJECT
 public:
     explicit DigFigure(StimParameters* stimParameters, QWidget* parent = nullptr);
-    void uniqueRedraw(QPainter &painter);
+    void uniqueRedraw(QPainter &painter) override;
 
 private:
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
 };
 
 

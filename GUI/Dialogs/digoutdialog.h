@@ -54,7 +54,7 @@ public:
     void loadParameters(StimParameters* parameters);
 
 public slots:
-    void accept();
+    void accept() override;
     void notifyFocusChanged(QWidget *lostFocus, QWidget *gainedFocus);
 
 private:

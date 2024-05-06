@@ -512,7 +512,7 @@ void FilePerChannelManager::updateEndOfData()
     // TODO - polish up to get the actual end of all data, not just assume from end of shortest amp file
     int tempTotalNumSamples = 0;
     for (int stream = 0; stream < info->numDataStreams; ++stream) {
-        for (int channel = 0; channel < amplifierFiles[stream].size(); ++channel) {
+        for (uint channel = 0; channel < amplifierFiles[stream].size(); ++channel) {
             if (amplifierWasSaved[stream][channel]) {
                 int64_t numAmpSamples = amplifierFiles[stream][channel]->fileSize() / 2;
                 if (numAmpSamples < tempTotalNumSamples || tempTotalNumSamples == 0) {

@@ -369,8 +369,6 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     openButton(nullptr),
     playbackButton(nullptr),
     advancedButton(nullptr),
-    useOpenCL(true),
-    playbackPorts(255),
     defaultSampleRateCheckBox(nullptr),
     defaultSettingsFileCheckBox(nullptr),
     splash(nullptr),
@@ -380,7 +378,9 @@ BoardSelectDialog::BoardSelectDialog(QWidget *parent) :
     state(nullptr),
     controllerInterface(nullptr),
     parser(nullptr),
-    controlWindow(nullptr)
+    controlWindow(nullptr),
+    useOpenCL(true),
+    playbackPorts(255)
 {
     // Information used by QSettings to save basic settings across sessions.
     QCoreApplication::setOrganizationName(OrganizationName);

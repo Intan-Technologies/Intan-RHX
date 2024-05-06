@@ -379,7 +379,7 @@ int64_t TraditionalIntanFileManager::blocksPresent()
 {
     // Should remain accurate even if data file continues growing
     int dataSizeBytes = 0;
-    for (int i = 0; i < consecutiveFiles.size(); i++) {
+    for (uint i = 0; i < consecutiveFiles.size(); i++) {
         dataSizeBytes += QFileInfo(consecutiveFiles[i].fileName).size() - info->headerSizeInBytes;
     }
     return dataSizeBytes / info->bytesPerDataBlock;

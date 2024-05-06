@@ -517,7 +517,7 @@ bool XMLInterface::checkConsistentChannels(const QByteArray &byteArray, QString 
                             errorMessage.append("\n");
                         }
                         errorMessage.append("Warning: The following channels are currently detected by the Intan controller but are not included in the settings file:");
-                        for (int i = 0; i < uninitializedChannels.size(); ++i) {
+                        for (uint i = 0; i < uninitializedChannels.size(); ++i) {
                             errorMessage.append("\n" + QString::fromStdString(uninitializedChannels[i]));
                         }
                     }
@@ -576,7 +576,7 @@ bool XMLInterface::checkConsistentChannels(const QByteArray &byteArray, QString 
 vector<string> XMLInterface::findUninitializedChannels(vector<string> allChannels, vector<bool> channelsInitializedFromXML) const
 {
     vector<string> uninitializedChannels;
-    for (int i = 0; i < allChannels.size(); ++i) {
+    for (uint i = 0; i < allChannels.size(); ++i) {
         if (!channelsInitializedFromXML[i]) {
             uninitializedChannels.push_back(allChannels[i]);
         }

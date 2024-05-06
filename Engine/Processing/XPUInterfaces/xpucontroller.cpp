@@ -32,9 +32,9 @@
 
 XPUController::XPUController(SystemState *state_, bool useOpenCL_, QObject *parent) :
     QObject(parent),
+    useOpenCL(useOpenCL_),
     state(state_),
-    usedXPUIndex(-1),
-    useOpenCL(useOpenCL_)
+    usedXPUIndex(-1)
 {
     state->writeToLog("Entered XPUController ctor");
     connect(state, SIGNAL(stateChanged()), this, SLOT(updateFromState()));
@@ -126,7 +126,11 @@ void XPUController::updateFromState()
     if (state->usedXPUIndex() != usedXPUIndex) {
         activeInterface->cleanupMemory();
         usedXPUIndex = state->usedXPUIndex();
-        activeInterface = (usedXPUIndex == 0) ? activeInterface = cpuInterface : activeInterface = gpuInterface;
+        if (usedXPUIndex == 0) {
+            activeInterface = cpuInterface;
+        } else {
+            activeInterface = gpuInterface;
+        }
         activeInterface->setupMemory();
     }
     activeInterface->updateFromState();

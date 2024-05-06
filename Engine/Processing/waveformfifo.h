@@ -36,7 +36,6 @@
 #include <map>
 #include <vector>
 #include <mutex>
-#include "rhxglobals.h"
 #include "semaphore.h"
 #include "minmax.h"
 #include "signalsources.h"
@@ -76,7 +75,7 @@ const uint8_t SpikeIdLikelyArtifact = 0x80u;
 class WaveformFifo
 {
 public:
-    enum Reader {
+    enum Reader : uint {
         ReaderDisplay = 0,
         ReaderDisk,
         ReaderAudio,

@@ -44,6 +44,7 @@ using namespace std;
 
 ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, ControllerInterface* controllerInterface_, AbstractRHXController* rhxController_) :
     QMainWindow(nullptr), // Since the parent isn't a QMainWindow but a QDialog, just pass a nullptr
+    stimParametersInterface(nullptr),
     state(state_),
     controllerInterface(controllerInterface_),
     rhxController(rhxController_),
@@ -76,8 +77,8 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
     rewindAction(nullptr),
     fastForwardAction(nullptr),
     fastPlaybackAction(nullptr),
-    jumpToStartAction(nullptr),
     jumpToEndAction(nullptr),
+    jumpToStartAction(nullptr),
     jumpBack1SecAction(nullptr),
     jumpBack10SecAction(nullptr),
     jumpAction(nullptr),
@@ -139,7 +140,6 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
     tcpDisplay(nullptr),
     showHideRow(nullptr),
     showHideStretch(nullptr),
-    stimParametersInterface(nullptr),
     stimClipboard(nullptr),
     currentlyRunning(false),
     currentlyRecording(false),
@@ -1534,8 +1534,8 @@ void ControlWindow::keyPressEvent(QKeyEvent *event)
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->testChip();
             }
-            break;
         }
+        break;
     case Qt::Key_V:
         if (state->testMode->getValue()) {
             if (!state->running) {

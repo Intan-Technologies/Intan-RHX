@@ -28,9 +28,6 @@
 //
 //------------------------------------------------------------------------------
 
-#include "stimparamdialog.h"
-#include "anoutdialog.h"
-#include "digoutdialog.h"
 #include "controlpanelbandwidthtab.h"
 #include "controlpanelimpedancetab.h"
 #include "controlpanelaudioanalogtab.h"
@@ -182,6 +179,8 @@ QString ControlPanel::currentTabName() const
     } else {
         qDebug() << "Unrecognized tab widget.";
     }
+
+    return QString();
 }
 
 QHBoxLayout* ControlPanel::createSelectionLayout()

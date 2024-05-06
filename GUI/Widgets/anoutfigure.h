@@ -40,7 +40,7 @@ class AnOutFigure : public AbstractFigure
     Q_OBJECT
 public:
     explicit AnOutFigure(StimParameters* stimParameters, QWidget *parent = nullptr);
-    void uniqueRedraw(QPainter &painter);
+    void uniqueRedraw(QPainter &painter) override;
 
 public slots:
     void updateMonophasicAndPositive(bool logicValue);
@@ -51,8 +51,8 @@ public slots:
     void highlightBaselineVoltage(bool highlight);
 
 private:
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
     bool localMonophasicAndPositive;
     QColor oldColor;
 };

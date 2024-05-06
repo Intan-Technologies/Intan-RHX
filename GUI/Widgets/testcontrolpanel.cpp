@@ -91,12 +91,12 @@ TestControlPanel::TestControlPanel(ControllerInterface *controllerInterface_, Ab
     rhxController(rhxController_),
     multiColumnDisplay(multiColumnDisplay_),
     stimParametersInterface(stimParametersInterface_),
-    reportPresent(false),
     helpDialogCheckInputWave(nullptr),
     helpDialogTestChip(nullptr),
     helpDialogUploadTestStimParameters(nullptr),
-    previousDelay(-1),
-    portComboBox(nullptr)
+    reportPresent(false),
+    portComboBox(nullptr),
+    previousDelay(-1)
 {
     setFocusPolicy(Qt::StrongFocus);
     this->setFocus();
@@ -2385,7 +2385,7 @@ void TestControlPanel::validateFastSettleChannels(QVector<QVector<double> > &fas
 int TestControlPanel::amoeba(QVector<double> &t, QVector<double> &ytarget, QVector<QVector<double> > &p, QVector<double> &y, int ndim, double ftol)
 {
     int i, ihi, ilo, inhi, j, mpts = ndim + 1;
-    double rtol, sum, swap, ysave, ytry;
+    double rtol, sum;
 
     QVector<double> psum;
     psum.resize(ndim);
@@ -2718,7 +2718,7 @@ double TestControlPanel::vectorAvg(QVector<double> vect, int start, int end)
 
 ReportDialog::ReportDialog(QWidget *parent)
 {
-
+    Q_UNUSED(parent);
 }
 
 void ReportDialog::keyPressEvent(QKeyEvent *event)
