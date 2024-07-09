@@ -94,8 +94,8 @@ TestControlPanel::TestControlPanel(ControllerInterface *controllerInterface_, Ab
     helpDialogCheckInputWave(nullptr),
     helpDialogTestChip(nullptr),
     helpDialogUploadTestStimParameters(nullptr),
-    previousDelay(-1),
     portComboBox(nullptr),
+    previousDelay(-1),
     auxIn1Min(3.3),
     auxIn1Max(0),
     auxIn1Median(0),
@@ -830,13 +830,11 @@ void TestControlPanel::recordDummySegment(double duration, int portIndex)
 void TestControlPanel::allocateDoubleArray3D(QVector<QVector<QVector<double> > > &array3D,
                                             int xSize, int ySize, int zSize)
 {
-    int i, j;
-
     if (xSize == 0) return;
     array3D.resize(xSize);
-    for (i = 0; i < xSize; ++i) {
+    for (int i = 0; i < xSize; ++i) {
         array3D[i].resize(ySize);
-        for (j = 0; j < ySize; ++j) {
+        for (int j = 0; j < ySize; ++j) {
             array3D[i][j].resize(zSize);
         }
     }
@@ -846,11 +844,9 @@ void TestControlPanel::allocateDoubleArray3D(QVector<QVector<QVector<double> > >
 void TestControlPanel::allocateDoubleArray2D(QVector<QVector<double> > &array2D,
                                             int xSize, int ySize)
 {
-    int i, j;
-
     if (xSize == 0) return;
     array2D.resize(xSize);
-    for (i = 0; i < xSize; ++i) {
+    for (int i = 0; i < xSize; ++i) {
         array2D[i].resize(ySize);
     }
 }
