@@ -16,10 +16,14 @@
     </p>
   </description>
 
+  <url type="homepage">https://intantech.com/RHX_software.html</url>
+
   <launchable type="desktop-id">com.intantech.intan_rhx.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://intantech.com/image-src/RHX_screenshot2_940.PNG</image>
     </screenshot>
   </screenshots>
+
+  <content_rating type="oars-1.1"/>
 </component>

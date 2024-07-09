@@ -33,8 +33,8 @@
 
 CommandParser::CommandParser(SystemState* state_, ControllerInterface *controllerInterface_, QObject *parent) :
     QObject(parent),
-    controllerInterface(controllerInterface_),
     controlWindow(nullptr),
+    controllerInterface(controllerInterface_),
     state(state_)
 {
     // These connections allow for interactions with communicators that may live in another thread
@@ -871,6 +871,8 @@ QString CommandParser::validateStimParams(StimParameters *stimParams) const
         if (stimParams->pulseTrainPeriod->getValue() < stimDuration)
             return "PulseTrainPeriodMicroseconds cannot be less than total pulse duration (sum of all phases used for this Shape)";
 
+        break;
+
     case BoardDacSignal:
         // PulseTrainPeriod cannot be less than stimDuration (which depends on Shape)
         // Biphasic: stimDuration = FirstPhaseDuration + SecondPhaseDuration
@@ -888,10 +890,14 @@ QString CommandParser::validateStimParams(StimParameters *stimParams) const
         if (stimParams->pulseTrainPeriod->getValue() < stimDuration)
             return "PulseTrainPeriodMicroseconds cannot be less than total pulse duration (sum of all phases used for this Shape)";
 
+        break;
+
     case BoardDigitalOutSignal:
         // PulseTrainPeriod cannot be less than FirstPhaseDuration
         if (stimParams->pulseTrainPeriod->getValue() < stimParams->firstPhaseDuration->getValue())
             return "PulseTrainPeriodMicroseconds cannot be less than pulse duration (FirstPhaseDurationMicroseconds)";
+
+        break;
 
     default:
         break;

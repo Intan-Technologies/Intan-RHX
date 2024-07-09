@@ -160,8 +160,8 @@ bool RHXController::uploadFPGABitfile(const string& filename)
     boardId = dev->GetWireOutValue(WireOutBoardId);
     boardVersion = dev->GetWireOutValue(WireOutBoardVersion);
 
-    cout << "Rhythm configuration file successfully loaded.  Rhythm version number: " <<
-            boardVersion << "\n\n";
+    std::cout << "Rhythm configuration file successfully loaded.  Rhythm version number: " <<
+        boardVersion << "\n" << std::endl;
 
     return true;
 }

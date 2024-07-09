@@ -34,6 +34,7 @@ TCPDataOutputThread::TCPDataOutputThread(WaveformFifo *waveformFifo_, const doub
     QThread(parent),
     tcpWaveformDataCommunicator(state_->tcpWaveformDataCommunicator),
     tcpSpikeDataCommunicator(state_->tcpSpikeDataCommunicator),
+    previousSample(nullptr),
     waveformFifo(waveformFifo_),
     signalSources(state_->signalSources),
     sampleRate(sampleRate_),
@@ -42,8 +43,7 @@ TCPDataOutputThread::TCPDataOutputThread(WaveformFifo *waveformFifo_, const doub
     stopThread(false),
     parentObject(parent),
     connected(false),
-    state(state_),
-    previousSample(nullptr)
+    state(state_)
 {
 }
 

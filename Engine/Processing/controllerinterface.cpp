@@ -299,8 +299,7 @@ int ControllerInterface::scanPorts(vector<ChipType> &chipType, vector<int> &port
                                                         state->lastDetectedChip->getValue(),
                                                         state->lastDetectedNumStreams->getValue());
 
-    for (int i = 0; i < chipType.size(); i++) {
-        qDebug() << "Here... i: " << i << " chip type: " << (int) chipType[i];
+    for (uint i = 0; i < chipType.size(); i++) {
         if (chipType[i] != NoChip) {
             state->lastDetectedChip->setValue((int) chipType[i]);
             break;

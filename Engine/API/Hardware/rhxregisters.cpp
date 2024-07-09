@@ -1122,7 +1122,7 @@ unsigned int RHXRegisters::createRHXCommand(RHXCommandType commandType, unsigned
     } else {
         switch (commandType) {
         case RHXCommandConvert:
-            if ((arg1 < 0) || (arg1 > 63)) {
+            if (((int)arg1 < 0) || (arg1 > 63)) {
                 cerr << "Error in RHXRegisters::createRHXCommand: " <<
                         "Channel number out of range.\n";
                 return -1;
@@ -1130,7 +1130,7 @@ unsigned int RHXRegisters::createRHXCommand(RHXCommandType commandType, unsigned
             return 0x0000 + (arg1 << 8);  // 00cccccc0000000h; if the command is 'Convert',
                                           // arg1 is the channel number.
         case RHXCommandRegRead:
-            if ((arg1 < 0) || (arg1 > 63)) {
+            if (((int)arg1 < 0) || (arg1 > 63)) {
                 cerr << "Error in RHXRegisters::createRHXCommand: " <<
                         "Register address out of range.\n";
                 return -1;
@@ -1182,12 +1182,12 @@ unsigned int RHXRegisters::createRHXCommand(RHXCommandType commandType, unsigned
     } else {
         switch (commandType) {
         case RHXCommandRegWrite:
-            if ((arg1 < 0) || (arg1 > 63)) {
+            if (((int)arg1 < 0) || (arg1 > 63)) {
                 cerr << "Error in RHXRegisters::createRHXCommand: " <<
                         "Register address out of range.\n";
                 return -1;
             }
-            if ((arg2 < 0) || (arg2 > 255)) {
+            if (((int)arg2 < 0) || (arg2 > 255)) {
                 cerr << "Error in RHXRegisters::createRHXCommand: " <<
                         "Register data out of range.\n";
                 return -1;

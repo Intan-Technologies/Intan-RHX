@@ -71,15 +71,15 @@ class CurrentSpinBox : public SmartSpinBox
     Q_OBJECT
 public:
     explicit CurrentSpinBox(double step_, QWidget *parent = nullptr);
-    void setTrueMinimum(double min);
+    void setTrueMinimum(double min) override;
 
 public slots:
-    void loadValue(double val);
-    void roundValue();
+    void loadValue(double val) override;
+    void roundValue() override;
 
 private slots:
-    void scaleUnits(double val);
-    void sendSignalValueMicro(double val);
+    void scaleUnits(double val) override;
+    void sendSignalValueMicro(double val) override;
 };
 
 
@@ -88,15 +88,15 @@ class TimeSpinBox : public SmartSpinBox
     Q_OBJECT
 public:
     explicit TimeSpinBox(double step_, QWidget *parent = nullptr);
-    void setTrueMinimum(double min);
+    void setTrueMinimum(double min) override;
 
 public slots:
-    void loadValue(double val);
-    void roundValue();
+    void loadValue(double val) override;
+    void roundValue() override;
 
 private slots:
-    void scaleUnits(double val);
-    void sendSignalValueMicro(double val);
+    void scaleUnits(double val) override;
+    void sendSignalValueMicro(double val) override;
 };
 
 #endif // SMARTSPINBOX_H

@@ -46,7 +46,7 @@ USBDataThread::USBDataThread(AbstractRHXController* controller_, DataStreamFifo*
     bufferSize = (BufferSizeInBlocks + 1) * BytesPerWord *
             RHXDataBlock::dataBlockSizeInWords(controller->getType(), controller->maxNumDataStreams());
     memoryNeededGB = sizeof(uint8_t) * bufferSize / (1024.0 * 1024.0 * 1024.0);
-    cout << "USBDataThread: Allocating " << bufferSize / 1.0e6 << " MBytes for USB buffer." << '\n';
+    std::cout << "USBDataThread: Allocating " << bufferSize / 1.0e6 << " MBytes for USB buffer." << std::endl;
     usbBuffer = nullptr;
 
     memoryAllocated = true;
@@ -54,7 +54,7 @@ USBDataThread::USBDataThread(AbstractRHXController* controller_, DataStreamFifo*
         usbBuffer = new uint8_t [bufferSize];
     } catch (std::bad_alloc&) {
         memoryAllocated = false;
-        cerr << "Error: USBDataThread constructor could not allocate " << memoryNeededGB << " GB of memory." << '\n';
+        std::cerr << "Error: USBDataThread constructor could not allocate " << memoryNeededGB << " GB of memory." << std::endl;
     }
 
 //    cout << "Ideal thread count: " << QThread::idealThreadCount() << EndOfLine;

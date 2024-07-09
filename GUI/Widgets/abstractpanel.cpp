@@ -32,10 +32,10 @@ void ColorWidget::setColor(QColor color)
 }
 
 AbstractPanel::AbstractPanel(ControllerInterface* controllerInterface_, SystemState* state_, CommandParser* parser_, ControlWindow *parent) :
-    controlWindow(parent),
-    controllerInterface(controllerInterface_),
     state(state_),
     parser(parser_),
+    controlWindow(parent),
+    controllerInterface(controllerInterface_),
     filterDisplaySelector(nullptr),
     tabWidget(nullptr),
     configureTab(nullptr),

@@ -16,11 +16,11 @@ AdvancedStartupDialog::AdvancedStartupDialog(bool &useOpenCL_, uint8_t &playback
     playbackFCheckBox(nullptr),
     playbackGCheckBox(nullptr),
     playbackHCheckBox(nullptr),
-    playbackPorts(&playbackPorts_),
-    demoMode(demoMode_),
     buttonBox(nullptr),
     useOpenCL(&useOpenCL_),
-    tempUseOpenCL(useOpenCL_)
+    tempUseOpenCL(useOpenCL_),
+    playbackPorts(&playbackPorts_),
+    demoMode(demoMode_)
 {
     useOpenCLDescription = new QLabel(tr(
         "OpenCL is a platform-independent framework that allows the CPU to\n"

@@ -52,7 +52,7 @@ WaveformDisplayColumn::WaveformDisplayColumn(int columnIndex_, WaveformDisplayMa
     portComboBox->addItems(state->signalSources->populatedGroupListWithChannelCounts());
 
     waveformPlot = new MultiWaveformPlot(columnIndex, waveformManager, controllerInterface, state, this);
-    connect(portComboBox, SIGNAL(currentIndexChanged(QString)), waveformPlot, SLOT(updateFromState()));
+    connect(portComboBox, SIGNAL(currentIndexChanged(int)), waveformPlot, SLOT(updateFromState()));
     if (state->testMode->getValue()) {
         portComboBox->setFocusProxy(waveformPlot);
     }

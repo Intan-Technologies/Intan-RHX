@@ -35,12 +35,12 @@
 #include "waveformfifo.h"
 
 WaveformFifo::WaveformFifo(SignalSources *signalSources_, int bufferSizeInDataBlocks_, int memorySizeInDataBlocks_, int maxWriteSizeInDataBlocks_, SystemState* state_) :
+    state(state_),
     signalSources(signalSources_),
     bufferSizeInDataBlocks(bufferSizeInDataBlocks_),
     memorySizeInDataBlocks(memorySizeInDataBlocks_),
     maxWriteSizeInDataBlocks(maxWriteSizeInDataBlocks_),
-    numReaders(NumberOfReaders),
-    state(state_)
+    numReaders(NumberOfReaders)
 {
     if (numReaders < 1) {
         cerr << "WaveformFifo constructor: numReaders must be one or greater." << '\n';
@@ -64,7 +64,7 @@ WaveformFifo::WaveformFifo(SignalSources *signalSources_, int bufferSizeInDataBl
     bufferAllocateSize = bufferSize + maxWriteSizeInSamples;
     bufferAllocateSizeInBlocks = bufferSizeInDataBlocks + maxWriteSizeInDataBlocks;
 
-    usedWordsNewData = new Semaphore [numReaders];
+    usedWordsNewData = new Semaphore[numReaders];
     bufferReadIndex.resize(numReaders);
     bufferMemoryIndex.resize(numReaders);
     numWordsToBeRead.resize(numReaders);

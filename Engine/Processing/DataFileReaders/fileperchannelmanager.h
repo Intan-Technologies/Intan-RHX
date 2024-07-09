@@ -49,7 +49,7 @@ public:
                           DataFileReader* parent);
     ~FilePerChannelManager();
 
-    long readDataBlocksRaw(int numBlocks, uint8_t* buffer);
+    long readDataBlocksRaw(int numBlocks, uint8_t* buffer) override;
     int64_t getLastTimeStamp() override;
     int64_t jumpToTimeStamp(int64_t target) override;
     void loadDataFrame() override;

@@ -342,7 +342,7 @@ void SoftwareReferenceProcessor::readReferenceSamples(vector<StreamChannelPair> 
 {
     const uint16_t* pRead;
 
-    for (int i = 0; i < addresses.size(); ++i) {
+    for (uint i = 0; i < addresses.size(); ++i) {
         pRead = start;
         pRead += 6; // Skip header and timestamp.
         pRead += misoWordSize * (numDataStreams * 3);  // Skip auxiliary channels.

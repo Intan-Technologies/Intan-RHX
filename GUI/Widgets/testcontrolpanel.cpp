@@ -2,6 +2,8 @@
 #include "testcontrolpanel.h"
 #include "controlwindow.h"
 
+#include <algorithm>
+
 HelpDialogCheckInputWave::HelpDialogCheckInputWave(QWidget *parent) :
     QDialog(parent)
 {
@@ -89,12 +91,11 @@ TestControlPanel::TestControlPanel(ControllerInterface *controllerInterface_, Ab
     rhxController(rhxController_),
     multiColumnDisplay(multiColumnDisplay_),
     stimParametersInterface(stimParametersInterface_),
-    reportPresent(false),
     helpDialogCheckInputWave(nullptr),
     helpDialogTestChip(nullptr),
     helpDialogUploadTestStimParameters(nullptr),
-    previousDelay(-1),
     portComboBox(nullptr),
+    previousDelay(-1),
     auxIn1Min(3.3),
     auxIn1Max(0),
     auxIn1Median(0),
@@ -829,13 +830,11 @@ void TestControlPanel::recordDummySegment(double duration, int portIndex)
 void TestControlPanel::allocateDoubleArray3D(QVector<QVector<QVector<double> > > &array3D,
                                             int xSize, int ySize, int zSize)
 {
-    int i, j;
-
     if (xSize == 0) return;
     array3D.resize(xSize);
-    for (i = 0; i < xSize; ++i) {
+    for (int i = 0; i < xSize; ++i) {
         array3D[i].resize(ySize);
-        for (j = 0; j < ySize; ++j) {
+        for (int j = 0; j < ySize; ++j) {
             array3D[i][j].resize(zSize);
         }
     }
@@ -845,11 +844,9 @@ void TestControlPanel::allocateDoubleArray3D(QVector<QVector<QVector<double> > >
 void TestControlPanel::allocateDoubleArray2D(QVector<QVector<double> > &array2D,
                                             int xSize, int ySize)
 {
-    int i, j;
-
     if (xSize == 0) return;
     array2D.resize(xSize);
-    for (i = 0; i < xSize; ++i) {
+    for (int i = 0; i < xSize; ++i) {
         array2D[i].resize(ySize);
     }
 }
@@ -1766,7 +1763,7 @@ double TestControlPanel::median(const QVector<double> &arr)
     }
 
     //Arrange 'arrCopy' lowest to highest
-    qSort(arrCopy);
+    std::sort(arrCopy.begin(), arrCopy.end());
 
     //if odd # of elements...
     if ((arrCopy.size() % 2) == 1)
@@ -2490,7 +2487,7 @@ void TestControlPanel::validateFastSettleChannels(QVector<QVector<double> > &fas
 int TestControlPanel::amoeba(QVector<double> &t, QVector<double> &ytarget, QVector<QVector<double> > &p, QVector<double> &y, int ndim, double ftol)
 {
     int i, ihi, ilo, inhi, j, mpts = ndim + 1;
-    double rtol, sum, swap, ysave, ytry;
+    double rtol, sum;
 
     QVector<double> psum;
     psum.resize(ndim);
@@ -2786,9 +2783,9 @@ void TestControlPanel::saveReport()
         }
         QTextStream out(&csvFile);
         if (state->getControllerTypeEnum() == ControllerStimRecord) {
-            out << "Channel Number,Triangle Error,Stim Error,Avg Positive Voltage, Avg Negative Voltage" << endl;
+            out << "Channel Number,Triangle Error,Stim Error,Avg Positive Voltage, Avg Negative Voltage" << Qt::endl;
         } else {
-            out << "Channel Number,Triangle Error,Settle Error" << endl;
+            out << "Channel Number,Triangle Error,Settle Error" << Qt::endl;
         }
 
         for (int channel = 0; channel < report.size(); channel++) {
@@ -2797,11 +2794,11 @@ void TestControlPanel::saveReport()
             if (state->getControllerTypeEnum() == ControllerStimRecord) {
                 out << report.at(channel)->variableError << ",";
                 out << report.at(channel)->posAvg << ",";
-                out << report.at(channel)->negAvg << endl;
+                out << report.at(channel)->negAvg << Qt::endl;
             } else {
-                out << report.at(channel)->variableError << endl;
+                out << report.at(channel)->variableError << Qt::endl;
             }
-            //out << report.at(channel)->variableError << endl;
+            //out << report.at(channel)->variableError << Qt::endl;
         }
         csvFile.close();
     }
@@ -2860,7 +2857,7 @@ double TestControlPanel::vectorAvg(QVector<double> vect, int start, int end)
 
 ReportDialog::ReportDialog(QWidget *parent)
 {
-
+    Q_UNUSED(parent);
 }
 
 void ReportDialog::keyPressEvent(QKeyEvent *event)

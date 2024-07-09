@@ -62,7 +62,7 @@ AbstractRHXController::AbstractRHXController(ControllerType type_, AmplifierSamp
     pipeReadErrorCode(0)
 {
     usbBufferSize = MaxNumBlocksToRead * BytesPerWord * RHXDataBlock::dataBlockSizeInWords(type, maxNumDataStreams());
-    cout << "RHXController: Allocating " << usbBufferSize / 1.0e6 << " MBytes for USB buffer.\n";
+    std::cout << "RHXController: Allocating " << usbBufferSize / 1.0e6 << " MBytes for USB buffer." << std::endl;
     usbBuffer = nullptr;
     usbBuffer = new uint8_t [usbBufferSize];
     numDataStreams = 0;
@@ -665,14 +665,13 @@ unsigned int AbstractRHXController::fifoCapacityInWords()
 // Print a command list to the console in readable form.
 void AbstractRHXController::printCommandList(const vector<unsigned int> &commandList) const
 {
-    unsigned int i, cmd;
     int channel, reg, data, uFlag, mFlag, dFlag, hFlag;
 
     cout << '\n';
-    for (i = 0; i < commandList.size(); ++i) {
-        cmd = commandList[i];
+    for (uint i = 0; i < commandList.size(); ++i) {
+        auto cmd = commandList[i];
         if (type != ControllerStimRecord) {
-            if (cmd < 0 || cmd > 0xffff) {
+            if ((int)cmd < 0 || cmd > 0xffff) {
                 cout << "  command[" << i << "] = INVALID COMMAND: " << cmd << '\n';
             } else if ((cmd & 0xc000) == 0x0000) {
                 channel = (cmd & 0x3f00) >> 8;

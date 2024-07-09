@@ -228,7 +228,7 @@ SynthDataBlockGenerator::SynthDataBlockGenerator(ControllerType type_, double sa
 {
     int bufferSizeInWords = MaxNumBlocksToRead *
             RHXDataBlock::dataBlockSizeInWords(type, AbstractRHXController::maxNumDataStreams(type));
-    cout << "SynthDataBlockGenerator: Allocating " << BytesPerWord * bufferSizeInWords / 1.0e6 << " MBytes for synthetic USB data generator.\n";
+    std::cout << "SynthDataBlockGenerator: Allocating " << BytesPerWord * bufferSizeInWords / 1.0e6 << " MBytes for synthetic USB data generator." << std::endl;
     usbWords = nullptr;
     usbWords = new uint16_t [bufferSizeInWords];
     dataBlockPeriodInNsec = 1.0e9 * ((double)RHXDataBlock::samplesPerDataBlock(type)) / sampleRate;

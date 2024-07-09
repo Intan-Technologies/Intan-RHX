@@ -2,13 +2,12 @@ Source: intan-rhx
 Section: non-free/science
 Priority: optional
 Maintainer: Intan Technologies <info@intantech.com>
-Build-Depends: debhelper-compat (= 12),
-               libqt5xmlpatterns5-dev,
+Build-Depends: debhelper-compat (= 13),
                ocl-icd-opencl-dev,
-               qt5-qmake,
-               qtbase5-dev,
-               qtmultimedia5-dev
-Standards-Version: 4.5.0
+               qmake6,
+               qt6-base-dev,
+               qt6-multimedia-dev
+Standards-Version: 4.6.2
 
 Package: intan-rhx
 Architecture: any

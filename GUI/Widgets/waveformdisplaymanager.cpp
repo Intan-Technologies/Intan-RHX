@@ -32,12 +32,12 @@
 #include "waveformdisplaymanager.h"
 
 WaveformDisplayManager::WaveformDisplayManager(SystemState* state_, int maxWidthInPixels_, int numRefreshZones_) :
-    state(state_),
-    needsFullReset(true),
     needsFullRedraw(true),
+    needsFullReset(true),
+    numColumns(0),
+    state(state_),
     finishedRedraws(0),
     finishedResets(0),
-    numColumns(0),
     maxWidthInPixels(maxWidthInPixels_),
     numRefreshZones(numRefreshZones_)
 {

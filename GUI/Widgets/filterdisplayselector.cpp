@@ -136,10 +136,10 @@ FilterDisplaySelector::FilterDisplaySelector(SystemState* state_, QWidget* paren
     connect(order3CheckBox, SIGNAL(clicked(bool)), this, SLOT(filterOrderChanged()));
     connect(order4CheckBox, SIGNAL(clicked(bool)), this, SLOT(filterOrderChanged()));
 
-    connect(order1ButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(filterOrderChanged()));
-    connect(order2ButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(filterOrderChanged()));
-    connect(order3ButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(filterOrderChanged()));
-    connect(order4ButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(filterOrderChanged()));
+    connect(order1ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(filterOrderChanged()));
+    connect(order2ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(filterOrderChanged()));
+    connect(order3ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(filterOrderChanged()));
+    connect(order4ButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(filterOrderChanged()));
 
     order1CheckBox->setChecked(true);
     order2CheckBox->setChecked(false);

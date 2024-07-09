@@ -44,6 +44,7 @@ using namespace std;
 
 ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, ControllerInterface* controllerInterface_, AbstractRHXController* rhxController_) :
     QMainWindow(nullptr), // Since the parent isn't a QMainWindow but a QDialog, just pass a nullptr
+    stimParametersInterface(nullptr),
     state(state_),
     controllerInterface(controllerInterface_),
     rhxController(rhxController_),
@@ -76,8 +77,8 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
     rewindAction(nullptr),
     fastForwardAction(nullptr),
     fastPlaybackAction(nullptr),
-    jumpToStartAction(nullptr),
     jumpToEndAction(nullptr),
+    jumpToStartAction(nullptr),
     jumpBack1SecAction(nullptr),
     jumpBack10SecAction(nullptr),
     jumpAction(nullptr),
@@ -139,7 +140,6 @@ ControlWindow::ControlWindow(SystemState* state_, CommandParser* parser_, Contro
     tcpDisplay(nullptr),
     showHideRow(nullptr),
     showHideStretch(nullptr),
-    stimParametersInterface(nullptr),
     stimClipboard(nullptr),
     currentlyRunning(false),
     currentlyRecording(false),
@@ -640,9 +640,9 @@ void ControlWindow::createActions()
 
 
     QPixmap jumpToEndPixmap(":/images/tostarticon.png");
-    QMatrix rm;
-    rm.rotate(180);
-    jumpToEndPixmap = jumpToEndPixmap.transformed(rm);
+    QTransform transform;
+    transform.rotate(180);
+    jumpToEndPixmap = jumpToEndPixmap.transformed(transform);
     QIcon jumpToEndIcon(jumpToEndPixmap);
     jumpToEndAction = new QAction(jumpToEndIcon, tr("Jump to End"), this);
     connect(jumpToEndAction, SIGNAL(triggered()), this, SLOT(jumpToEndSlot()));
@@ -1534,29 +1534,29 @@ void ControlWindow::keyPressEvent(QKeyEvent *event)
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->testChip();
             }
-            break;
         }
+        break;
     case Qt::Key_V:
         if (state->testMode->getValue()) {
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->viewReport();
             }
-            break;
         }
+        break;
     case Qt::Key_U:
         if (state->testMode->getValue()) {
             if (!state->running && state->getControllerTypeEnum() == ControllerStimRecord) {
                 ((TestControlPanel*) controlPanel)->uploadStimManual();
             }
-            break;
         }
+        break;
     case Qt::Key_C:
         if (state->testMode->getValue()) {
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->checkInputWave();
             }
-            break;
         }
+        break;
     case Qt::Key_Space:
         if (state->testMode->getValue()) {
             if (!state->running) {
@@ -1564,15 +1564,15 @@ void ControlWindow::keyPressEvent(QKeyEvent *event)
             } else {
                 stopControllerSlot();
             }
-            break;
         }
+        break;
     case Qt::Key_R:
         if (state->testMode->getValue()) {
             if (!state->running) {
                 ((TestControlPanel*) controlPanel)->rescanPorts();
             }
-            break;
         }
+        break;
 
     default:
         QWidget::keyPressEvent(event);
