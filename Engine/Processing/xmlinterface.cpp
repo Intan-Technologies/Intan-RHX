@@ -884,7 +884,7 @@ void XMLInterface::parseSignalGroupsAttributes(const QByteArray &byteArray, QStr
 {
     QXmlStreamReader stream(byteArray);
     while (!stream.atEnd()) {
-        while (stream.name() != "SignalGroup") {
+        while (stream.name() != QStringLiteral("SignalGroup")) {
             QXmlStreamReader::TokenType token = stream.readNext();
             if (token == QXmlStreamReader::EndDocument) {
                 return;
@@ -894,7 +894,7 @@ void XMLInterface::parseSignalGroupsAttributes(const QByteArray &byteArray, QStr
         QXmlStreamAttributes attributes = stream.attributes();
         QString portName("");
         for (auto attribute : attributes) {
-            if (attribute.name().toString().toLower() == "prefix") {
+            if (attribute.name().toString().toLower() == QStringLiteral("prefix")) {
                 portName = "Port " + attribute.value().toString();
                 break;
             }
@@ -910,7 +910,7 @@ void XMLInterface::parseSignalGroupsAttributes(const QByteArray &byteArray, QStr
             QString attributeName = attribute.name().toString();
             QString attributeValue = attribute.value().toString();
 
-            if (attributeValue != "N/A") {
+            if (attributeValue != QStringLiteral("N/A")) {
                 StateSingleItem *singleItem = state->locateStateSingleItem(thisSignalGroup->portItems, attributeName);
 
                 // If the attribute is a StateSingleItem, set it according to XMLIncludeParameters.
