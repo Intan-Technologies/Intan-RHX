@@ -6,7 +6,8 @@ Build-Depends: debhelper-compat (= 13),
                ocl-icd-opencl-dev,
                qmake6,
                qt6-base-dev,
-               qt6-multimedia-dev
+               qt6-multimedia-dev,
+			   liblua5.3-dev
 Standards-Version: 4.6.2
 
 Package: intan-rhx

@@ -37,4 +37,5 @@ eatmydata apt-get install -yq --no-install-recommends \
     ocl-icd-opencl-dev \
 	qmake6 \
 	qt6-base-dev \
-	qt6-multimedia-dev
+	qt6-multimedia-dev \
+	liblua5.3-dev
