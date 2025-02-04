@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.2
+//  Version 3.4.0
 //
-//  Copyright (c) 2020-2024 Intan Technologies
+//  Copyright (c) 2020-2025 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -30,6 +30,7 @@
 
 #include <QFileInfo>
 #include <iostream>
+#include <thread>
 #include "rhxglobals.h"
 #include "datafilereader.h"
 #include "fileperchannelmanager.h"
@@ -511,7 +512,7 @@ void FilePerChannelManager::updateEndOfData()
     // TODO - polish up to get the actual end of all data, not just assume from end of shortest amp file
     int tempTotalNumSamples = 0;
     for (int stream = 0; stream < info->numDataStreams; ++stream) {
-        for (int channel = 0; channel < amplifierFiles[stream].size(); ++channel) {
+        for (uint channel = 0; channel < amplifierFiles[stream].size(); ++channel) {
             if (amplifierWasSaved[stream][channel]) {
                 int64_t numAmpSamples = amplifierFiles[stream][channel]->fileSize() / 2;
                 if (numAmpSamples < tempTotalNumSamples || tempTotalNumSamples == 0) {

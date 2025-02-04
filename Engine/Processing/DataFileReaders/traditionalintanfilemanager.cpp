@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.2
+//  Version 3.4.0
 //
-//  Copyright (c) 2020-2024 Intan Technologies
+//  Copyright (c) 2020-2025 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -90,7 +90,7 @@ TraditionalIntanFileManager::TraditionalIntanFileManager(const QString& fileName
     firstTimeStamp = info->firstTimeStamp;
     lastTimeStamp = info->lastTimeStamp;
 
-    vector<int64_t> numSamplesInFiles;
+    std::vector<int64_t> numSamplesInFiles;
     numSamplesInFiles.push_back(info->numSamplesInFile);
     bool discontinuity = false;
     int i;
@@ -326,7 +326,7 @@ void TraditionalIntanFileManager::loadDataFrame()
                     atEndOfCurrentFile = false;
                     dataFile->seek(info->headerSizeInBytes);
                 } else {
-                    cerr << "Error: Could not open data file " << consecutiveFiles[consecutiveFileIndex].fileName.toStdString()
+                    std::cerr << "Error: Could not open data file " << consecutiveFiles[consecutiveFileIndex].fileName.toStdString()
                          << '\n';
                 }
             }
@@ -379,7 +379,7 @@ int64_t TraditionalIntanFileManager::blocksPresent()
 {
     // Should remain accurate even if data file continues growing
     int dataSizeBytes = 0;
-    for (int i = 0; i < consecutiveFiles.size(); i++) {
+    for (uint i = 0; i < consecutiveFiles.size(); i++) {
         dataSizeBytes += QFileInfo(consecutiveFiles[i].fileName).size() - info->headerSizeInBytes;
     }
     return dataSizeBytes / info->bytesPerDataBlock;

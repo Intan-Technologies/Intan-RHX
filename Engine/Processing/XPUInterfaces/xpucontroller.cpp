@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.3.2
+//  Version 3.4.0
 //
-//  Copyright (c) 2020-2024 Intan Technologies
+//  Copyright (c) 2020-2025 Intan Technologies
 //
 //  This file is part of the Intan Technologies RHX Data Acquisition Software.
 //
@@ -32,9 +32,9 @@
 
 XPUController::XPUController(SystemState *state_, bool useOpenCL_, QObject *parent) :
     QObject(parent),
+    useOpenCL(useOpenCL_),
     state(state_),
-    usedXPUIndex(-1),
-    useOpenCL(useOpenCL_)
+    usedXPUIndex(-1)
 {
     state->writeToLog("Entered XPUController ctor");
     connect(state, SIGNAL(stateChanged()), this, SLOT(updateFromState()));
@@ -126,7 +126,11 @@ void XPUController::updateFromState()
     if (state->usedXPUIndex() != usedXPUIndex) {
         activeInterface->cleanupMemory();
         usedXPUIndex = state->usedXPUIndex();
-        activeInterface = (usedXPUIndex == 0) ? activeInterface = cpuInterface : activeInterface = gpuInterface;
+        if (usedXPUIndex == 0) {
+            activeInterface = cpuInterface;
+        } else {
+            activeInterface = gpuInterface;
+        }
         activeInterface->setupMemory();
     }
     activeInterface->updateFromState();
