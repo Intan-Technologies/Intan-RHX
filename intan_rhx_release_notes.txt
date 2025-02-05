@@ -122,3 +122,5 @@ Intan RHX release notes
 - Fix Spike Output TCP GUI unresponsiveness
 - Add OpenCL setting to saved settings, allowing OpenCL to remain disabled between sessions if specified by user
 - Small adjustments to preserve readability with Qt 6 GUI display
+- Fix bug that could cause incorrect fast settle behavior during stimulation pulse trains
+- Fix bug that could, under rare conditions, cause software to enter test mode upon startup
