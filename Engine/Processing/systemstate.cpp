@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -488,6 +488,7 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     tScale->setValue("2000");
 
     yScaleWide = new DiscreteItemList("WideScaleMicroVolts", globalItems, this);
+    yScaleWide->addItem("20", "20 " + MicroVoltsSymbol, 20.0 );
     yScaleWide->addItem("50", "50 " + MicroVoltsSymbol, 50.0 );
     yScaleWide->addItem("100", "100 " + MicroVoltsSymbol, 100.0 );
     yScaleWide->addItem("200", "200 " + MicroVoltsSymbol, 200.0 );
@@ -498,6 +499,7 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     yScaleWide->setValue("500");
 
     yScaleLow = new DiscreteItemList("LowScaleMicroVolts", globalItems, this);
+    yScaleLow->addItem("20", "20 " + MicroVoltsSymbol, 20.0 );
     yScaleLow->addItem("50", "50 " + MicroVoltsSymbol, 50.0 );
     yScaleLow->addItem("100", "100 " + MicroVoltsSymbol, 100.0 );
     yScaleLow->addItem("200", "200 " + MicroVoltsSymbol, 200.0 );
@@ -508,6 +510,7 @@ SystemState::SystemState(const AbstractRHXController* controller_, StimStepSize 
     yScaleLow->setValue("500");
 
     yScaleHigh = new DiscreteItemList("HighScaleMicroVolts", globalItems, this);
+    yScaleHigh->addItem("20", "20 " + MicroVoltsSymbol, 20.0 );
     yScaleHigh->addItem("50", "50 " + MicroVoltsSymbol, 50.0 );
     yScaleHigh->addItem("100", "100 " + MicroVoltsSymbol, 100.0 );
     yScaleHigh->addItem("200", "200 " + MicroVoltsSymbol, 200.0 );

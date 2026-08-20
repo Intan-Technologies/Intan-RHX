@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -43,6 +43,8 @@ SaveToDiskThread::SaveToDiskThread(WaveformFifo* waveformFifo_, SystemState* sta
     keepGoing = false;
     running = false;
     stopThread = false;
+
+    connect(parent, SIGNAL(rescanFinished()), this, SLOT(updateTriggerWaveformPointers()));
 }
 
 SaveToDiskThread::~SaveToDiskThread()
@@ -54,18 +56,22 @@ SaveToDiskThread::~SaveToDiskThread()
     }
 }
 
+void SaveToDiskThread::updateTriggerWaveformPointers()
+{
+    boardDigitalInWaveform = waveformFifo->getDigitalWaveformPointer("DIGITAL-IN-WORD");
+    boardAdcWaveform.resize(AbstractRHXController::numAnalogIO(state->getControllerTypeEnum(), state->expanderConnected->getValue()));
+    for (int i = 0; i < (int) boardAdcWaveform.size(); ++i) {
+        boardAdcWaveform[i] = waveformFifo->getAnalogWaveformPointer("ANALOG-IN-" +
+                                                                     AbstractRHXController::getAnalogIOChannelNumber(state->getControllerTypeEnum(), i));
+    }
+}
+
 void SaveToDiskThread::run()
 {
     const int NumSamples = RHXDataBlock::samplesPerDataBlock(state->getControllerTypeEnum());
     int bytesPerMinute = 0;
     const QString saveFileErrorMessage = "Could not open save file(s). Please check that the provided filename is valid, the provided path location exists, and that the location doesn't require elevated permissions to write to.";
-
-    boardDigitalInWaveform = waveformFifo->getDigitalWaveformPointer("DIGITAL-IN-WORD");
-    boardAdcWaveform.resize(AbstractRHXController::numAnalogIO(state->getControllerTypeEnum(), state->expanderConnected->getValue()));
-    for (int i = 0; i < (int) boardAdcWaveform.size(); ++i) {
-        boardAdcWaveform[i] = waveformFifo->getAnalogWaveformPointer("ANALOG-IN-" +
-                                                AbstractRHXController::getAnalogIOChannelNumber(state->getControllerTypeEnum(), i));
-    }
+    updateTriggerWaveformPointers();
 
     while (!stopThread) {
         digitalTrigger = state->triggerSource->getValue().left(3).toUpper() == "DIG";

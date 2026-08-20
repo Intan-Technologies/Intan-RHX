@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -46,7 +46,7 @@ const int HASHMARKLENGTH = 5;
 // Software version number (e.g., version 1.3.5)
 #define SOFTWARE_MAIN_VERSION_NUMBER 3
 #define SOFTWARE_SECONDARY_VERSION_NUMBER 5
-#define SOFTWARE_TERTIARY_VERSION_NUMBER 1
+#define SOFTWARE_TERTIARY_VERSION_NUMBER 2
 
 enum ControllerType {
     ControllerRecordUSB2 = 0,

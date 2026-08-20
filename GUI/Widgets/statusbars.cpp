@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -36,6 +36,10 @@ StatusBars::StatusBars(QWidget *parent) :
     hwBufferPercent = 0.0;
     swBufferPercent = 0.0;
     cpuLoadPercent = 0.0;
+    hwMinorWarningCount = 0;
+    hwMajorWarningCount = 0;
+    swMinorWarningCount = 0;
+    swMajorWarningCount = 0;
 
     background = QImage(":images/status_header.png");
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -72,38 +76,78 @@ void StatusBars::updateBars(double hwBufferPercent_, double swBufferPercent_, do
     // Emit signal for changes in hw buffer warning status
     if (hwBufferPercent_ >= MajorWarningThreshold) {
         if (hwBufferPercent < MajorWarningThreshold) {
-            emit bufferStatusChanged(BufferMajorWarning); // When entering MajorWarning zone from below, emit MajorWarning signal
+            hwMajorWarningCount = 1; // When entering MajorWarning zone from below, start listening for two more instances above the threshold
+        } else if (hwMajorWarningCount > 0) {
+            hwMajorWarningCount++; // When listening above the threshold, keep track of how many instances in a row stay there
+        }
+
+        if (hwMajorWarningCount > 3) {
+            emit bufferStatusChanged(BufferMajorWarning); // When 3 instances in a row above major threshold occur, emit MajorWarning signal
+            hwMajorWarningCount = 0;
         }
     }
 
     else if (hwBufferPercent_ >= MinorWarningThreshold) {
-        if (hwBufferPercent < MinorWarningThreshold || hwBufferPercent >= MajorWarningThreshold) {
-            emit bufferStatusChanged(BufferMinorWarning); // When entering MinorWarning zone from below or above, emit MinorWarning signal
+        if (hwBufferPercent < MinorWarningThreshold) {
+            hwMinorWarningCount = 1; // When entering MinorWarning zone from below, start listening for two more instances above the threshold
+        } else if (hwMinorWarningCount > 0) {
+            hwMinorWarningCount++; // When listening above the threshold, keep track of how many instances in a row stay there
+        }
+
+        if (hwMinorWarningCount > 3) {
+            emit bufferStatusChanged(BufferMinorWarning); // When 3 instances in a row above major threhsold occur, emit MinorWarning signal
+            hwMinorWarningCount = 0;
+        }
+
+        if (hwBufferPercent >= MajorWarningThreshold) {
+            hwMajorWarningCount = 0; // When entering MinorWarning zone from above, reset majorWarningCount to 0
         }
     }
 
     else {
-        if (hwBufferPercent >= MinorWarningThreshold) {
+        if ((hwBufferPercent_ < MinorWarningThreshold) && (hwBufferPercent >= MinorWarningThreshold)) {
             emit bufferStatusChanged(BufferNoWarning); // When entering NoWarning zone from above, emit NoWarning signal
+            hwMajorWarningCount = 0; // Reset majorWarningCount to 0
+            hwMinorWarningCount = 0; // Reset minorWarningCount to 0
         }
     }
 
     // Emit signal for changes in sw buffer warning status
     if (swBufferPercent_ >= MajorWarningThreshold) {
         if (swBufferPercent < MajorWarningThreshold) {
-            emit bufferStatusChanged(BufferMajorWarning); // When entering MajorWarning zone from below, emit MajorWarning signal
+            swMajorWarningCount = 1; // When entering MajorWarning zone from below, start listening for two more instances above the threshold
+        } else if (swMajorWarningCount > 0) {
+            swMajorWarningCount++; // When listening above the threshold, keep track of how many instances in a row stay there
+        }
+
+        if (swMajorWarningCount > 3) {
+            emit bufferStatusChanged(BufferMajorWarning); // When 3 instances in a row above major threshold occur, emit MajorWarning signal
+            swMajorWarningCount = 0;
         }
     }
 
     else if (swBufferPercent_ >= MinorWarningThreshold) {
-        if (swBufferPercent < MinorWarningThreshold || swBufferPercent >= MajorWarningThreshold) {
-            emit bufferStatusChanged(BufferMinorWarning); // When entering MinorWarning zone from below or above, emit MinorWarning signal
+        if (swBufferPercent < MinorWarningThreshold) {
+            swMinorWarningCount = 1; // When entering MinorWarning zone from below, start listening for two more instances above the threshold
+        } else if (swMinorWarningCount > 0) {
+            swMinorWarningCount++; // When listening above the threshold, keep track of how many instances in a row stay there
+        }
+
+        if (swMinorWarningCount > 3) {
+            emit bufferStatusChanged(BufferMinorWarning); // When 3 instances in a row above major threhsold occur, emit MinorWarning signal
+            swMinorWarningCount = 0;
+        }
+
+        if (swBufferPercent >= MajorWarningThreshold) {
+            swMajorWarningCount = 0; // When entering MinorWarning zone from above, reset majorWarningCount to 0
         }
     }
 
     else {
-        if (swBufferPercent >= MinorWarningThreshold) {
+        if ((swBufferPercent_ < MinorWarningThreshold) && (swBufferPercent >= MinorWarningThreshold)) {
             emit bufferStatusChanged(BufferNoWarning); // When entering NoWarning zone from above, emit NoWarning signal
+            swMajorWarningCount = 0; // Reset majorWarningCount to 0
+            swMinorWarningCount = 0; // Reset minorWarningCount to 0
         }
     }
 

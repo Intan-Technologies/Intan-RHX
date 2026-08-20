@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -156,6 +156,7 @@ signals:
     void cpuLoadPercent(double percent);
     void TCPErrorMessage(QString errorMessage);
     void TCPWarningMessage(QString warningMessage);
+    void rescanFinished();
 
 public slots:
     void updateFromState();

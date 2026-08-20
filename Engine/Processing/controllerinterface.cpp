@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -292,6 +292,7 @@ void ControllerInterface::rescanPorts(bool updateDisplay)
 
     if (waveformFifo) {
         waveformFifo->updateForRescan();
+        emit rescanFinished();
     }
 
     if (display) {

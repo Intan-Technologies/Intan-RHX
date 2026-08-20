@@ -150,3 +150,7 @@ Intan RHX release notes
 - Add experimental WriteToDiskLatency option "Minimal" with more frequent flushing than "Lowest" (use with caution)
 - Add command-line startup settings INI file option for default settings file
 - Add option for TCP sockets to remain "Pending" instead of "Disconnected" when client disconnects
+
+* Version 3.5.2, 20 August 2026
+- Fix memory bug that could affect Episodic Triggered Recording after a Rescan Ports occurred
+- Add new lowest vertical magnification option at 20 microVolts to WIDE, HIGH, and LOW waveforms

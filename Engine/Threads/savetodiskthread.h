@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  Intan Technologies RHX Data Acquisition Software
-//  Version 3.5.1
+//  Version 3.5.2
 //
 //  Copyright (c) 2020-2026 Intan Technologies
 //
@@ -72,6 +72,9 @@ public slots:
     void saveLiveNote(const QString& note);
     void setPosStimAmplitude(int stream, int channel, int amplitude);
     void setNegStimAmplitude(int stream, int channel, int amplitude);
+
+private slots:
+    void updateTriggerWaveformPointers();
 
 private:
     WaveformFifo* waveformFifo;
